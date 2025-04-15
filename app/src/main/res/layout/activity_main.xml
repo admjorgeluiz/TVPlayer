@@ -5,18 +5,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Exibe a URL atual selecionada para carregar a lista -->
+    <TextView
+        android:id="@+id/tvCurrentListUrl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Nenhuma lista selecionada"
+        android:textAppearance="?attr/textAppearanceBody1"
+        android:padding="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"/>
+
+    <!-- Campo de busca -->
+    <EditText
+        android:id="@+id/edtSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Buscar canal..."
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvCurrentListUrl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
     <!-- RecyclerView para exibir a lista de canais -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewChannels"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtSearch"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- ProgressBar para indicar carregamento -->
+    <!-- ProgressBar para indicação de carregamento -->
     <ProgressBar
         android:id="@+id/progressBarLoading"
         style="?android:attr/progressBarStyleLarge"
@@ -34,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/label_load_m3u"
-        android:src="@drawable/ic_android_black_24dp"
+        android:src="@drawable/icons8_plus"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="16dp" />

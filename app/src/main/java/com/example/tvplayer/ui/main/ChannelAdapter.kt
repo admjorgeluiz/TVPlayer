@@ -10,7 +10,7 @@ import com.example.tvplayer.R
 import com.example.tvplayer.data.model.M3UItem
 
 class ChannelAdapter(
-    private val channels: List<M3UItem>,
+    private var channels: List<M3UItem>,
     private val onItemClick: (M3UItem) -> Unit
 ) : RecyclerView.Adapter<ChannelAdapter.ChannelViewHolder>() {
 
@@ -20,8 +20,8 @@ class ChannelAdapter(
 
         fun bind(item: M3UItem) {
             channelName.text = item.name
-            // Caso deseje carregar a imagem do logo com uma biblioteca (ex.: Glide):
-            // if (item.logo != null) Glide.with(itemView.context).load(item.logo).into(channelLogo)
+            // Se quiser carregar a imagem, utilize uma biblioteca como Glide ou Picasso:
+            // Glide.with(itemView.context).load(item.logo).into(channelLogo)
             itemView.setOnClickListener { onItemClick(item) }
         }
     }
@@ -36,4 +36,10 @@ class ChannelAdapter(
     }
 
     override fun getItemCount(): Int = channels.size
+
+    // Método para atualizar os dados do adapter e notificar as mudanças
+    fun updateData(newChannels: List<M3UItem>) {
+        channels = newChannels
+        notifyDataSetChanged()
+    }
 }

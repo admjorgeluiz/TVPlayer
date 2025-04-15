@@ -7,6 +7,7 @@ constraintlayoutVersion = "2.2.1"
 coreKtxVersion = "1.16.0"
 espressoCoreVersion = "3.6.1"
 exoplayer = "2.19.1"
+gson = "2.10.1"
 kotlin = "2.0.21"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -35,6 +36,7 @@ androidx-media3-hls = { module = "androidx.media3:media3-hls", version.ref = "me
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 exoplayer = { module = "com.google.android.exoplayer:exoplayer", version.ref = "exoplayer" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

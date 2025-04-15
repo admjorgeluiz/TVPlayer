@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.androidx.activity.v1101)
     implementation(libs.androidx.constraintlayout.v221)
     implementation(libs.libvlc.all)
+    implementation(libs.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit.v121)
     androidTestImplementation(libs.androidx.espresso.core.v361)

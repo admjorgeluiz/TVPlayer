@@ -1,86 +1,106 @@
 [
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-xhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/layout_activity_player.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/layout/activity_player.xml"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/layout_activity_player.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/layout/activity_player.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-xhdpi/ic_launcher.webp"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-xxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/drawable/ic_launcher_foreground.xml"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/drawable_ic_launcher_background.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/drawable/ic_launcher_background.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/xml_data_extraction_rules.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/xml/data_extraction_rules.xml"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/layout_item_channel.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/layout/item_channel.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-hdpi/ic_launcher.webp"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-xxxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-xxxhdpi/ic_launcher_round.webp"
+        "merged": "com.example.tvplayer.app-debug-36:/drawable_de_volta.xml.flat",
+        "source": "com.example.tvplayer.app-main-38:/drawable/de_volta.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-xhdpi/ic_launcher_round.webp"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-xxhdpi/ic_launcher.webp"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/drawable_ic_android_black_24dp.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/drawable/ic_android_black_24dp.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/layout_dialog_input_url.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/layout/dialog_input_url.xml"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/xml_backup_rules.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/xml/backup_rules.xml"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-xhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-mdpi/ic_launcher.webp"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-xxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-xxxhdpi/ic_launcher.webp"
+        "merged": "com.example.tvplayer.app-debug-36:/layout_activity_channel_list.xml.flat",
+        "source": "com.example.tvplayer.app-main-38:/layout/activity_channel_list.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-mdpi/ic_launcher_round.webp"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/layout_activity_channel_list.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/layout/activity_channel_list.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/drawable_ic_launcher_background.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/drawable/ic_launcher_background.xml"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/xml_data_extraction_rules.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/xml/data_extraction_rules.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/layout_activity_main.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/layout/activity_main.xml"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-xxxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/drawable_ic_android_black_24dp.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/drawable/ic_android_black_24dp.xml"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/layout_dialog_input_url.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/layout/dialog_input_url.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/xml_backup_rules.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/xml/backup_rules.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-hdpi/ic_launcher_round.webp"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-hdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.tvplayer.app-main-38:/mipmap-xxhdpi/ic_launcher_round.webp"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-mdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/layout_item_channel.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/layout/item_channel.xml"
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/drawable_icons8_plus.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/drawable/icons8_plus.xml"
+    },
+    {
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/layout_activity_list_config.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/layout/activity_list_config.xml"
+    },
+    {
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/layout_activity_main.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/layout/activity_main.xml"
     }
 ]

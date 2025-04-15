@@ -7,11 +7,18 @@
     android:padding="16dp">
 
     <EditText
+        android:id="@+id/edtListName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:hint="@string/nome_da_lista" />
+
+    <EditText
         android:id="@+id/edtUrlM3U"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
         android:hint="@string/digite_a_url_da_lista_m3u"
-        android:inputType="textUri" />
-
+        android:inputType="textUri"
+        android:layout_marginTop="8dp" />
 </LinearLayout>
