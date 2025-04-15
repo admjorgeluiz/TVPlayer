@@ -6,7 +6,7 @@
       /gradle-wrapper.properties
 
       # Build output
-      /build/
+      /app/build/
       **/build/
 
       # Local configuration

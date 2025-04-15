@@ -9,6 +9,7 @@ drawable ic_launcher_foreground
 drawable icons8_plus
 id btnBack
 id btnSave
+id btnSelectFile
 id btnViewList
 id edtListName
 id edtListUrl
@@ -20,7 +21,7 @@ id progressBarLoading
 id recyclerViewChannels
 id textChannelName
 id tvCurrentListUrl
-id vlc_video_layout
+id videoLayout
 layout activity_channel_list
 layout activity_list_config
 layout activity_main
@@ -31,6 +32,8 @@ mipmap ic_launcher
 mipmap ic_launcher_round
 string app_name
 string back_button
+string buscar_canal
+string carregar_do_arquivo
 string channel_logo
 string channel_name
 string digite_a_url_da_lista_m3u

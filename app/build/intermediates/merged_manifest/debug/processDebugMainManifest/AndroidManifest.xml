@@ -8,14 +8,14 @@
         android:minSdkVersion="24"
         android:targetSdkVersion="35" />
 
-    <!-- Permissão para acesso à internet -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <permission
         android:name="com.example.tvplayer.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.example.tvplayer.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" /> <!-- Se você usar Storage Access Framework via GetContent, não necessita de READ_EXTERNAL_STORAGE -->
+    <uses-permission android:name="com.example.tvplayer.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+
     <application
         android:allowBackup="true"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -30,7 +30,7 @@
         android:testOnly="true"
         android:theme="@style/Theme.TVPlayer" >
 
-        <!-- Tela de Configuração da Lista (tela inicial para adicionar/editar a lista) -->
+        <!-- Tela de Configuração: Tela inicial -->
         <activity
             android:name="com.example.tvplayer.ui.config.ListConfigActivity"
             android:exported="true" >
@@ -41,12 +41,12 @@
             </intent-filter>
         </activity>
 
-        <!-- Tela de exibição da lista de canais (apresenta o conteúdo da lista M3U) -->
+        <!-- Tela de exibição da lista -->
         <activity
             android:name="com.example.tvplayer.ui.list.ChannelListActivity"
             android:exported="true" />
 
-        <!-- Tela de reprodução (PlayerActivity) -->
+        <!-- Tela de reprodução -->
         <activity
             android:name="com.example.tvplayer.ui.player.PlayerActivity"
             android:exported="true" />

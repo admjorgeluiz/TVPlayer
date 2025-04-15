@@ -9,4 +9,6 @@
     <string name="ver_lista">Ver Lista</string>
     <string name="url_da_lista_m3u">URL da lista M3U</string>
     <string name="back_button">black_button</string>
+    <string name="carregar_do_arquivo">Carregar do Arquivo</string>
+    <string name="buscar_canal">Buscar canal...</string>
 </resources>

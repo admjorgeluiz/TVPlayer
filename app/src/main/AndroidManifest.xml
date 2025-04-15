@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.tvplayer">
 
-    <!-- Permissão para acesso à internet -->
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- Se você usar Storage Access Framework via GetContent, não necessita de READ_EXTERNAL_STORAGE -->
 
     <application
         android:allowBackup="true"
@@ -19,7 +15,7 @@
         android:theme="@style/Theme.TVPlayer"
         tools:targetApi="31">
 
-        <!-- Tela de Configuração da Lista (tela inicial para adicionar/editar a lista) -->
+        <!-- Tela de Configuração: Tela inicial -->
         <activity
             android:name=".ui.config.ListConfigActivity"
             android:exported="true">
@@ -29,12 +25,12 @@
             </intent-filter>
         </activity>
 
-        <!-- Tela de exibição da lista de canais (apresenta o conteúdo da lista M3U) -->
+        <!-- Tela de exibição da lista -->
         <activity
             android:name=".ui.list.ChannelListActivity"
             android:exported="true" />
 
-        <!-- Tela de reprodução (PlayerActivity) -->
+        <!-- Tela de reprodução -->
         <activity
             android:name=".ui.player.PlayerActivity"
             android:exported="true" />

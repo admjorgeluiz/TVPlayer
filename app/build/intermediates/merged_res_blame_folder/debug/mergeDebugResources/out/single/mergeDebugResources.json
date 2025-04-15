@@ -24,10 +24,6 @@
         "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-xxxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/drawable_de_volta.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/drawable/de_volta.xml"
-    },
-    {
         "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/drawable_ic_launcher_foreground.xml.flat",
         "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/drawable/ic_launcher_foreground.xml"
     },
@@ -48,12 +44,12 @@
         "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-xxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-36:/layout_activity_channel_list.xml.flat",
-        "source": "com.example.tvplayer.app-main-38:/layout/activity_channel_list.xml"
-    },
-    {
         "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/layout_activity_channel_list.xml.flat",
         "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/layout/activity_channel_list.xml"
+    },
+    {
+        "merged": "com.example.tvplayer.app-debug-36:/layout_activity_player.xml.flat",
+        "source": "com.example.tvplayer.app-main-38:/layout/activity_player.xml"
     },
     {
         "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/xml_data_extraction_rules.xml.flat",
@@ -74,6 +70,10 @@
     {
         "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-hdpi_ic_launcher.webp.flat",
         "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/drawable_de_volta.xml.flat",
+        "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-38:/drawable/de_volta.xml"
     },
     {
         "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-36:/mipmap-mdpi_ic_launcher.webp.flat",

@@ -3221,6 +3221,7 @@ id bounceEnd
 id bounceStart
 id btnBack
 id btnSave
+id btnSelectFile
 id btnViewList
 id buttonPanel
 id cache_measures
@@ -3637,6 +3638,7 @@ id up
 id useLogo
 id vertical
 id vertical_only
+id videoLayout
 id view_offset_helper
 id view_transition
 id view_tree_disjoint_parent
@@ -3646,7 +3648,6 @@ id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible
 id visible_removing_fragment_view_tag
-id vlc_video_layout
 id west
 id withText
 id with_icon
@@ -3909,6 +3910,7 @@ string bottomsheet_action_expand_halfway
 string bottomsheet_drag_handle_clicked
 string bottomsheet_drag_handle_content_description
 string build_vlc_revision
+string buscar_canal
 string call_notification_answer_action
 string call_notification_answer_video_action
 string call_notification_decline_action
@@ -3916,6 +3918,7 @@ string call_notification_hang_up_action
 string call_notification_incoming_text
 string call_notification_ongoing_text
 string call_notification_screening_text
+string carregar_do_arquivo
 string channel_logo
 string channel_name
 string character_counter_content_description

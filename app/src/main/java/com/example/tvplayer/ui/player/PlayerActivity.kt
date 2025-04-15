@@ -17,68 +17,105 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var videoLayout: VLCVideoLayout
 
+    companion object {
+        private const val TAG = "PlayerActivity"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Utiliza o layout que contém o VLCVideoLayout com id "videoLayout"
         setContentView(R.layout.activity_player)
 
-        // Obtenha o componente de vídeo do layout
-        videoLayout = findViewById(R.id.vlc_video_layout)
+        videoLayout = findViewById(R.id.videoLayout)
 
-        // Obtenha a URL do canal enviada via Intent
-        val channelUrl = intent.getStringExtra("channel_url") ?: ""
-        if (channelUrl.isBlank()) {
-            Toast.makeText(this, "URL do canal inválida!", Toast.LENGTH_SHORT).show()
+        // Recupera a URL do canal enviada via Intent
+        val channelUrl = intent.getStringExtra("channel_url")
+        if (channelUrl.isNullOrEmpty()) {
+            Toast.makeText(this, "URL do canal não encontrada", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
+        Log.d(TAG, "Reproduzindo canal: $channelUrl")
 
-        // Configuração do LibVLC com opções (você pode adicionar opções específicas se necessário)
-        val options = ArrayList<String>()
-        // Exemplo de opção para cache de rede: options.add(":network-caching=300")
+        // Inicializa o LibVLC com as opções desejadas (por exemplo, network caching de 300ms)
+        val options = arrayListOf("--network-caching=300")
         libVLC = LibVLC(this, options)
 
-        // Cria o MediaPlayer e anexa a view de vídeo
+        // Cria o MediaPlayer e anexa as views (o VLCVideoLayout)
         mediaPlayer = MediaPlayer(libVLC)
         mediaPlayer.attachViews(videoLayout, null, false, false)
 
-        // Cria a mídia a partir da URL
-        val media = Media(libVLC, Uri.parse(channelUrl))
-        // Ativa a aceleração de hardware (opcional)
-        media.setHWDecoderEnabled(true, false)
-        // Adiciona uma opção de cache, se desejado
-        media.addOption(":network-caching=300")
-
-        // Atribui a mídia ao MediaPlayer e inicia a reprodução
-        mediaPlayer.media = media
-        // Libera a referência à mídia, pois o MediaPlayer já a possui
-        media.release()
-
-        // Configura o listener de eventos para monitorar erros de reprodução
-        mediaPlayer.setEventListener(object : MediaPlayer.EventListener {
-            override fun onEvent(event: MediaPlayer.Event) {
-                if (event.type == MediaPlayer.Event.EncounteredError) {
-                    Log.e("PlayerActivity", "Erro na reprodução!")
-                    Toast.makeText(this@PlayerActivity, "Erro na reprodução.", Toast.LENGTH_LONG).show()
-                    // Opcional: finalize a atividade
-                    // finish()
+        // Define o listener para tratamento de eventos, incluindo erros (utilize EncounteredError conforme sua versão do LibVLC)
+        mediaPlayer.setEventListener { event ->
+            when (event.type) {
+                MediaPlayer.Event.EncounteredError -> {
+                    Log.e(TAG, "Erro de reprodução: evento ${event.type}")
+                    runOnUiThread {
+                        Toast.makeText(
+                            this@PlayerActivity,
+                            "Erro durante a reprodução",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                else -> {
+                    Log.d(TAG, "Evento de MediaPlayer: ${event.type}")
                 }
             }
-        })
+        }
 
-        // Prepara e inicia a reprodução
-        mediaPlayer.play()
+        // Inicia a reprodução
+        playMedia(channelUrl)
+    }
+
+    /**
+     * Inicia a reprodução do stream a partir da URL informada.
+     */
+    private fun playMedia(url: String) {
+        try {
+            // Cria um objeto Media a partir da URL
+            val uri = Uri.parse(url)
+            val media = Media(libVLC, uri)
+            // Habilita o decodificador de hardware (se suportado)
+            media.setHWDecoderEnabled(true, false)
+            // Adiciona opções extras se necessário (exemplo: network caching)
+            media.addOption(":network-caching=300")
+            mediaPlayer.media = media
+
+            // Libera o objeto Media (o MediaPlayer já o clonou internamente)
+            media.release()
+
+            // Inicia a reprodução
+            mediaPlayer.play()
+        } catch (e: Exception) {
+            Log.e(TAG, "Exceção ao reproduzir o conteúdo", e)
+            Toast.makeText(this, "Erro ao iniciar a reprodução", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        mediaPlayer.pause()
+        if (::mediaPlayer.isInitialized) {
+            mediaPlayer.pause()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::mediaPlayer.isInitialized && !mediaPlayer.isPlaying) {
+            mediaPlayer.play()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.stop()
-        mediaPlayer.detachViews()
-        mediaPlayer.release()
-        libVLC.release()
+        if (::mediaPlayer.isInitialized) {
+            mediaPlayer.stop()
+            mediaPlayer.detachViews()
+            mediaPlayer.release()
+        }
+        if (::libVLC.isInitialized) {
+            libVLC.release()
+        }
     }
 }

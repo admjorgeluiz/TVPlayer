@@ -16,6 +16,7 @@ espressoCore = "3.5.1"
 appcompat = "1.6.1"
 kotlinStdlib = "2.0.21"
 libvlcAll = "3.4.0"
+libvlcAllVersion = "3.4.6"
 material = "1.10.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
@@ -43,6 +44,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
 libvlc-all = { module = "org.videolan.android:libvlc-all", version.ref = "libvlcAll" }
+libvlc-all-v346 = { module = "org.videolan.android:libvlc-all", version.ref = "libvlcAllVersion" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }

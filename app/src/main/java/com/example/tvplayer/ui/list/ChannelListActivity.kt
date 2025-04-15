@@ -2,9 +2,11 @@ package com.example.tvplayer.ui.list
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -20,6 +22,7 @@ import com.example.tvplayer.ui.player.PlayerActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
 import java.net.URL
 
 class ChannelListActivity : AppCompatActivity() {
@@ -34,6 +37,9 @@ class ChannelListActivity : AppCompatActivity() {
     // SharedPreferences key para a URL da lista (mesmo nome usado na tela de configuração)
     private val PREFS_NAME = "tvplayer_prefs"
     private val KEY_LIST_URL = "list_url"
+
+    // Tag para logging
+    private val TAG = "ChannelListActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,10 +59,11 @@ class ChannelListActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // Carrega a URL salva do SharedPreferences
+        // Carrega a URL salva dos SharedPreferences
         val savedUrl = loadListUrlFromPrefs()
+        Log.d(TAG, "URL carregada dos prefs: $savedUrl")
         if (!savedUrl.isNullOrBlank()) {
-            fetchM3UFromUrl(savedUrl)
+            fetchM3UFromSource(savedUrl)
         } else {
             Toast.makeText(
                 this,
@@ -68,22 +75,50 @@ class ChannelListActivity : AppCompatActivity() {
     }
 
     /**
-     * Faz o download do conteúdo M3U a partir da URL salva e processa a lista.
+     * Faz o download ou leitura do conteúdo M3U a partir da fonte informada.
+     *
+     * Se a string (após trim) iniciar com "content:", a fonte é tratada como URI local
+     * usando o ContentResolver; caso contrário, é tratada como URL remota.
      */
-    private fun fetchM3UFromUrl(urlString: String) {
+    private fun fetchM3UFromSource(source: String) {
         progressBar.visibility = ProgressBar.VISIBLE
         lifecycleScope.launch {
             try {
-                val m3uContent = withContext(Dispatchers.IO) { URL(urlString).readText() }
+                val src = source.trim() // Remove espaços em branco
+                Log.d(TAG, "Processando fonte: $src")
+                val m3uContent = withContext(Dispatchers.IO) {
+                    if (src.startsWith("content:")) {
+                        // Trata URI local (ex.: selecionada via SAF)
+                        val uri = Uri.parse(src)
+                        Log.d(TAG, "Fonte é uma URI local: $uri")
+                        contentResolver.openInputStream(uri)?.bufferedReader()?.readText()
+                            ?: throw Exception("Não foi possível ler o arquivo selecionado pelo SAF.")
+                    } else {
+                        // Trata como URL remota
+                        Log.d(TAG, "Fonte é uma URL remota.")
+                        val url = URL(src)
+                        val connection = url.openConnection() as HttpURLConnection
+                        connection.connectTimeout = 5000
+                        connection.readTimeout = 5000
+                        try {
+                            connection.inputStream.bufferedReader().readText()
+                        } finally {
+                            connection.disconnect()
+                        }
+                    }
+                }
                 onM3UContentReceived(m3uContent)
             } catch (e: Exception) {
                 e.printStackTrace()
                 progressBar.visibility = ProgressBar.GONE
-                Toast.makeText(
-                    this@ChannelListActivity,
-                    "Erro ao carregar a lista.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                runOnUiThread {
+                    Toast.makeText(
+                        this@ChannelListActivity,
+                        "Erro ao carregar a lista.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                Log.e(TAG, "Erro em fetchM3UFromSource", e)
             }
         }
     }
@@ -104,8 +139,9 @@ class ChannelListActivity : AppCompatActivity() {
     private fun updateRecyclerView(channelsList: List<M3UItem>) {
         adapter = ChannelAdapter(channelsList) { selectedChannel ->
             // Ao clicar em um canal, inicia a PlayerActivity passando a URL do canal
-            val intent = Intent(this, PlayerActivity::class.java)
-            intent.putExtra("channel_url", selectedChannel.url)
+            val intent = Intent(this, PlayerActivity::class.java).apply {
+                putExtra("channel_url", selectedChannel.url)
+            }
             startActivity(intent)
         }
         recyclerView.adapter = adapter

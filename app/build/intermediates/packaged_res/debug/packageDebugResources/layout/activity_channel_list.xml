@@ -25,7 +25,7 @@
         android:id="@+id/edtSearch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Buscar canal..."
+        android:hint="@string/buscar_canal"
         android:padding="8dp"
         app:layout_constraintTop_toBottomOf="@id/btnBack"
         app:layout_constraintStart_toStartOf="parent"

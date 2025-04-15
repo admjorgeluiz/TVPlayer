@@ -2,42 +2,33 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- Campo para o nome da lista -->
+    <!-- Campo para inserir o nome amigável da lista -->
     <EditText
         android:id="@+id/edtListName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:autofillHints=""
         android:hint="@string/nome_da_lista"
-        android:minHeight="48dp"
-        android:textColorHint="#546E7A"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="VisualLintTextFieldSize" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Campo para a URL da lista -->
+    <!-- Campo para inserir a URL da lista M3U -->
     <EditText
         android:id="@+id/edtListUrl"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:autofillHints=""
         android:hint="@string/url_da_lista_m3u"
         android:inputType="textUri"
-        android:minHeight="48dp"
-        android:textColorHint="#546E7A"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edtListName"
-        tools:ignore="VisualLintTextFieldSize" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
-    <!-- Botão para salvar os dados -->
+    <!-- Botão para salvar as configurações -->
     <Button
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
@@ -45,7 +36,17 @@
         android:text="@string/salvar"
         app:layout_constraintTop_toBottomOf="@id/edtListUrl"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp" />
+
+    <!-- Botão para selecionar um arquivo local -->
+    <Button
+        android:id="@+id/btnSelectFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/carregar_do_arquivo"
+        app:layout_constraintTop_toBottomOf="@id/edtListUrl"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp" />
 
     <!-- Botão para visualizar a lista -->
     <Button
@@ -53,7 +54,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ver_lista"
-        app:layout_constraintTop_toBottomOf="@id/edtListUrl"
+        app:layout_constraintTop_toBottomOf="@id/btnSave"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp"/>
 

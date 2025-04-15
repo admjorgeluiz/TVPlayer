@@ -1,0 +1,6 @@
+com.example.tvplayer.test.app-tracing-1.2.0-0 /Users/jorge/.gradle/caches/8.11.1/transforms/8ad96b7cb27c2b4a85b60861fc5da91a/transformed/tracing-1.2.0/res
+com.example.tvplayer.test.app-core-1.6.1-1 /Users/jorge/.gradle/caches/8.11.1/transforms/c21dc43dfab36dd8435eba2e77d9f931/transformed/core-1.6.1/res
+com.example.tvplayer.test.app-androidTest-2 /Users/jorge/AndroidStudioProjects/TVPlayer/app/build/generated/res/resValues/androidTest/debug
+com.example.tvplayer.test.app-mergeDebugAndroidTestResources-3 /Users/jorge/AndroidStudioProjects/TVPlayer/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+com.example.tvplayer.test.app-mergeDebugAndroidTestResources-4 /Users/jorge/AndroidStudioProjects/TVPlayer/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+com.example.tvplayer.test.app-debugAndroidTest-5 /Users/jorge/AndroidStudioProjects/TVPlayer/app/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources

@@ -4,6 +4,8 @@
     <color name="white">#FFFFFFFF</color>
     <string name="app_name">TVPlayer</string>
     <string name="back_button">black_button</string>
+    <string name="buscar_canal">Buscar canal...</string>
+    <string name="carregar_do_arquivo">Carregar do Arquivo</string>
     <string name="channel_logo">Logo do Canal</string>
     <string name="channel_name">Nome do Canal</string>
     <string name="digite_a_url_da_lista_m3u">Digite a URL da lista M3U</string>
