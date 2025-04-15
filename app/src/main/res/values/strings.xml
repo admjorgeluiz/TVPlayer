@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TVPlayer</string>
+    <string name="channel_logo">Logo do Canal</string>
+    <string name="channel_name">Nome do Canal</string>
+    <string name="label_load_m3u">Carregar Lista M3U</string>
+    <string name="digite_a_url_da_lista_m3u">Digite a URL da lista M3U</string>
+</resources>

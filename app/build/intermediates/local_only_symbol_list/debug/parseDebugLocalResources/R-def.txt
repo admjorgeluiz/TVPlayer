@@ -1,0 +1,29 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color white
+drawable ic_android_black_24dp
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+id edtUrlM3U
+id fabLoadM3U
+id imageLogo
+id progressBarLoading
+id recyclerViewChannels
+id textChannelName
+id vlc_video_layout
+layout activity_main
+layout activity_player
+layout dialog_input_url
+layout item_channel
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+string channel_logo
+string channel_name
+string digite_a_url_da_lista_m3u
+string label_load_m3u
+style Base.Theme.TVPlayer
+style Theme.TVPlayer
+xml backup_rules
+xml data_extraction_rules

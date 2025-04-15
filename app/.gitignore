@@ -1,0 +1,23 @@
+/build# Gradle
+      /.gradle/
+      /gradle/
+      gradle-app.setting
+      /gradle-wrapper.jar
+      /gradle-wrapper.properties
+
+      # Build output
+      /build/
+      **/build/
+
+      # Local configuration
+      local.properties
+
+      # Android Studio files
+      .idea/
+      *.iml
+      *.ipr
+      *.iws
+
+      # Other files
+      .DS_Store
+      *.log
