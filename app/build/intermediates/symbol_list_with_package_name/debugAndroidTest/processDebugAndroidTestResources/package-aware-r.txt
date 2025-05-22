@@ -1,3 +1,0 @@
-com.example.tvplayer.test
-style WhiteBackgroundDialogTheme
-style WhiteBackgroundTheme

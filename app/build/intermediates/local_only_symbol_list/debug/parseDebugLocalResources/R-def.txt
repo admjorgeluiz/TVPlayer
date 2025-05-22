@@ -7,7 +7,6 @@ drawable ic_android_black_24dp
 drawable ic_launcher_background
 drawable ic_launcher_foreground
 drawable icons8_plus
-id btnBack
 id btnSave
 id btnSelectFile
 id btnViewList
@@ -20,6 +19,7 @@ id imageLogo
 id progressBarLoading
 id recyclerViewChannels
 id textChannelName
+id toolbar
 id tvCurrentListUrl
 id videoLayout
 layout activity_channel_list
@@ -29,7 +29,8 @@ layout activity_player
 layout dialog_input_url
 layout item_channel
 mipmap ic_launcher
-mipmap ic_launcher_round
+mipmap ic_launcher_adaptive_back
+mipmap ic_launcher_adaptive_fore
 string app_name
 string back_button
 string buscar_canal

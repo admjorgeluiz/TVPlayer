@@ -37,6 +37,7 @@ android {
 
 dependencies {
     implementation(libs.kotlin.stdlib)
+    implementation (libs.androidx.core.ktx.v190)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.core.ktx.v1160)
     implementation(libs.androidx.appcompat.v170)

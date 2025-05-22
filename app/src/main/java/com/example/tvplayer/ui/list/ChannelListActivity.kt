@@ -4,13 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,8 +21,12 @@ import com.example.tvplayer.ui.player.PlayerActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.BufferedReader
+import java.io.IOException
 import java.net.HttpURLConnection
+import java.net.SocketTimeoutException
 import java.net.URL
+import androidx.appcompat.widget.Toolbar
 
 class ChannelListActivity : AppCompatActivity() {
 
@@ -31,136 +34,144 @@ class ChannelListActivity : AppCompatActivity() {
     private lateinit var edtSearch: EditText
     private lateinit var progressBar: ProgressBar
     private lateinit var adapter: ChannelAdapter
+
     private var channels: List<M3UItem> = emptyList()
-    private var filteredChannels: List<M3UItem> = emptyList()
 
-    // SharedPreferences key para a URL da lista (mesmo nome usado na tela de configuração)
-    private val PREFS_NAME = "tvplayer_prefs"
-    private val KEY_LIST_URL = "list_url"
-
-    // Tag para logging
-    private val TAG = "ChannelListActivity"
+    companion object {
+        private const val PREFS_NAME        = "tvplayer_prefs"
+        private const val KEY_LIST_URL      = "list_url"
+        private const val TAG               = "ChannelListActivity"
+        private const val CONNECT_TIMEOUT   = 10_000
+        private const val READ_TIMEOUT      = 10_000
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_channel_list)
 
-        recyclerView = findViewById(R.id.recyclerViewChannels)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        edtSearch = findViewById(R.id.edtSearch)
+        // 1) Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        // 2) habilita a seta Up
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        // RecyclerView e demais views
+        recyclerView = findViewById<RecyclerView>(R.id.recyclerViewChannels).apply {
+            layoutManager = LinearLayoutManager(this@ChannelListActivity)
+        }
+        edtSearch   = findViewById(R.id.edtSearch)
         progressBar = findViewById(R.id.progressBarLoading)
 
-        // Configura o campo de busca para filtrar os canais conforme o usuário digita
-        edtSearch.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                filterChannels(s.toString())
-            }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        // filtra conforme digita...
+        edtSearch.addTextChangedListener(afterTextChanged = {
+            val q = it.toString().trim().lowercase()
+            adapter.updateData(channels.filter { c -> c.name.lowercase().contains(q) })
         })
 
-        // Carrega a URL salva dos SharedPreferences
-        val savedUrl = loadListUrlFromPrefs()
-        Log.d(TAG, "URL carregada dos prefs: $savedUrl")
+        // tenta ler URL salva...
+        val savedUrl = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getString(KEY_LIST_URL, null)
+
         if (!savedUrl.isNullOrBlank()) {
-            fetchM3UFromSource(savedUrl)
+            loadFromSource(savedUrl)
         } else {
-            Toast.makeText(
-                this,
-                "Nenhuma URL de lista encontrada. Configure a lista na tela de configuração.",
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(this, "Nenhuma URL configurada.", Toast.LENGTH_LONG).show()
             finish()
         }
     }
 
-    /**
-     * Faz o download ou leitura do conteúdo M3U a partir da fonte informada.
-     *
-     * Se a string (após trim) iniciar com "content:", a fonte é tratada como URI local
-     * usando o ContentResolver; caso contrário, é tratada como URL remota.
-     */
-    private fun fetchM3UFromSource(source: String) {
+    // 3) captura o clique no Up
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
+    }
+
+    private fun loadFromSource(source: String) {
         progressBar.visibility = ProgressBar.VISIBLE
+
         lifecycleScope.launch {
             try {
-                val src = source.trim() // Remove espaços em branco
-                Log.d(TAG, "Processando fonte: $src")
-                val m3uContent = withContext(Dispatchers.IO) {
-                    if (src.startsWith("content:")) {
-                        // Trata URI local (ex.: selecionada via SAF)
-                        val uri = Uri.parse(src)
-                        Log.d(TAG, "Fonte é uma URI local: $uri")
-                        contentResolver.openInputStream(uri)?.bufferedReader()?.readText()
-                            ?: throw Exception("Não foi possível ler o arquivo selecionado pelo SAF.")
-                    } else {
-                        // Trata como URL remota
-                        Log.d(TAG, "Fonte é uma URL remota.")
-                        val url = URL(src)
-                        val connection = url.openConnection() as HttpURLConnection
-                        connection.connectTimeout = 5000
-                        connection.readTimeout = 5000
-                        try {
-                            connection.inputStream.bufferedReader().readText()
-                        } finally {
-                            connection.disconnect()
-                        }
+                val list = withContext(Dispatchers.IO) {
+                    openStreamReader(source).use { reader ->
+                        M3UParser.parseStream(reader)
                     }
                 }
-                onM3UContentReceived(m3uContent)
-            } catch (e: Exception) {
-                e.printStackTrace()
+
+                // atualiza UI
                 progressBar.visibility = ProgressBar.GONE
-                runOnUiThread {
-                    Toast.makeText(
-                        this@ChannelListActivity,
-                        "Erro ao carregar a lista.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                channels = list
+                adapter = ChannelAdapter(channels) { item ->
+                    startActivity(
+                        Intent(this@ChannelListActivity, PlayerActivity::class.java)
+                            .putExtra("channel_url", item.url)
+                    )
                 }
-                Log.e(TAG, "Erro em fetchM3UFromSource", e)
+                recyclerView.adapter = adapter
+
+            } catch (toe: SocketTimeoutException) {
+                progressBar.visibility = ProgressBar.GONE
+                Toast.makeText(
+                    this@ChannelListActivity,
+                    "Timeout ao baixar lista. Verifique a conexão/URL.",
+                    Toast.LENGTH_LONG
+                ).show()
+                Log.e(TAG, "Timeout ao baixar lista", toe)
+
+            } catch (e: Exception) {
+                progressBar.visibility = ProgressBar.GONE
+                Toast.makeText(
+                    this@ChannelListActivity,
+                    "Erro ao carregar lista: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+                Log.e(TAG, "Erro ao carregar lista", e)
             }
         }
     }
 
     /**
-     * Processa o conteúdo M3U recebido, atualiza a lista interna e o RecyclerView.
+     * Tenta abrir um BufferedReader a partir da fonte:
+     * - content: → URI local (SAF)
+     * - https/http → HttpURLConnection
+     *
+     * Se falhar com “Unable to parse TLS packet header” em HTTPS,
+     * tenta novamente trocando para HTTP puro.
      */
-    private fun onM3UContentReceived(m3uContent: String) {
-        progressBar.visibility = ProgressBar.GONE
-        channels = M3UParser.parse(m3uContent)
-        filteredChannels = channels
-        updateRecyclerView(filteredChannels)
-    }
-
-    /**
-     * Atualiza o RecyclerView com a lista de canais e define a ação de clique para iniciar o PlayerActivity.
-     */
-    private fun updateRecyclerView(channelsList: List<M3UItem>) {
-        adapter = ChannelAdapter(channelsList) { selectedChannel ->
-            // Ao clicar em um canal, inicia a PlayerActivity passando a URL do canal
-            val intent = Intent(this, PlayerActivity::class.java).apply {
-                putExtra("channel_url", selectedChannel.url)
-            }
-            startActivity(intent)
+    @Throws(IOException::class)
+    private fun openStreamReader(source: String): BufferedReader {
+        // se for URI via SAF, retorna direto
+        if (source.startsWith("content:")) {
+            val uri = Uri.parse(source)
+            return contentResolver
+                .openInputStream(uri)
+                ?.bufferedReader()
+                ?: throw IOException("Não foi possível abrir URI local.")
         }
-        recyclerView.adapter = adapter
-    }
 
-    /**
-     * Filtra os canais de acordo com o termo de busca e atualiza o adapter.
-     */
-    private fun filterChannels(query: String) {
-        val lowerQuery = query.lowercase()
-        filteredChannels = channels.filter { it.name.lowercase().contains(lowerQuery) }
-        adapter.updateData(filteredChannels)
-    }
+        // helper para abrir conexão HTTP/HTTPS
+        fun connect(urlString: String): BufferedReader {
+            val conn = (URL(urlString).openConnection() as HttpURLConnection).apply {
+                connectTimeout = CONNECT_TIMEOUT
+                readTimeout    = READ_TIMEOUT
+            }
+            return conn.inputStream.bufferedReader()
+        }
 
-    /**
-     * Carrega a URL da lista dos SharedPreferences.
-     */
-    private fun loadListUrlFromPrefs(): String? {
-        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getString(KEY_LIST_URL, null)
+        return try {
+            // primeira tentativa (respeita scheme original: http:// ou https://)
+            connect(source)
+        } catch (ioe: IOException) {
+            // se for erro de TLS em HTTPS, tenta forçar HTTP
+            if (ioe.message?.contains("Unable to parse TLS packet header", ignoreCase = true) == true
+                && source.startsWith("https://")
+            ) {
+                Log.w(TAG, "Falha no handshake TLS, tentando HTTP em vez de HTTPS")
+                val fallback = source.replaceFirst("https://", "http://")
+                connect(fallback)
+            } else {
+                throw ioe
+            }
+        }
     }
 }

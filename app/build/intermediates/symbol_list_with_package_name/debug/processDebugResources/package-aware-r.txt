@@ -3219,7 +3219,6 @@ id bounce
 id bounceBoth
 id bounceEnd
 id bounceStart
-id btnBack
 id btnSave
 id btnSelectFile
 id btnViewList
@@ -3616,6 +3615,7 @@ id title
 id titleDividerNoCustom
 id title_template
 id toggle
+id toolbar
 id top
 id topPanel
 id touch_outside
@@ -3870,7 +3870,8 @@ layout surface_view
 layout texture_view
 layout vlc_video_layout
 mipmap ic_launcher
-mipmap ic_launcher_round
+mipmap ic_launcher_adaptive_back
+mipmap ic_launcher_adaptive_fore
 plurals mtrl_badge_content_description
 string abc_action_bar_home_description
 string abc_action_bar_up_description

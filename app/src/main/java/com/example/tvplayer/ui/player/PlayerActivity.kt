@@ -24,6 +24,8 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Utiliza o layout que contém o VLCVideoLayout com id "videoLayout"
+        supportActionBar?.hide()
+
         setContentView(R.layout.activity_player)
 
         videoLayout = findViewById(R.id.videoLayout)
