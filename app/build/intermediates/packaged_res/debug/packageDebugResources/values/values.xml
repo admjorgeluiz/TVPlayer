@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <string name="ad_unit_banner">ca-app-pub-2298650638489458/3122875797</string>
     <string name="app_name">TVPlayer</string>
     <string name="back_button">black_button</string>
     <string name="buscar_canal">Buscar canal...</string>

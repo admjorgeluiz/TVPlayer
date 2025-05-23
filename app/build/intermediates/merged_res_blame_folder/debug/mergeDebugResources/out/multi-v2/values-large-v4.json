@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.tvplayer.app-mergeDebugResources-34:/values-large-v4/values-large-v4.xml",
+            "outputFile": "com.example.tvplayer.app-mergeDebugResources-41:/values-large-v4/values-large-v4.xml",
             "map": [
                 {
-                    "source": "/Users/jorge/.gradle/caches/8.11.1/transforms/b61586f12329dafbb23aba689051861c/transformed/appcompat-1.7.0/res/values-large-v4/values-large-v4.xml",
+                    "source": "/Users/jorge/.gradle/caches/8.11.1/transforms/cf5d6a4ba79ee36155f1b3dcfd1973e6/transformed/appcompat-1.7.0/res/values-large-v4/values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "/Users/jorge/.gradle/caches/8.11.1/transforms/4d381a07e9b73b0a8c45001ae13bf594/transformed/material-1.12.0/res/values-large-v4/values-large-v4.xml",
+                    "source": "/Users/jorge/.gradle/caches/8.11.1/transforms/946cbf5d1ac795e6341aac29d51d1131/transformed/material-1.12.0/res/values-large-v4/values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

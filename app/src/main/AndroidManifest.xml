@@ -3,6 +3,8 @@
     package="com.example.tvplayer">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
 
     <application
         android:allowBackup="true"
@@ -15,6 +17,11 @@
         android:theme="@style/Theme.TVPlayer"
         tools:targetApi="31"
         android:usesCleartextTraffic="true">
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2298650638489458~4037320451"/>
+
 
         <!-- Tela de Configuração: Tela inicial -->
         <activity

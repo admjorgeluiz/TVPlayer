@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.tvplayer.app-mergeDebugResources-34:/values-h320dp-port-v13/values-h320dp-port-v13.xml",
+            "outputFile": "com.example.tvplayer.app-mergeDebugResources-41:/values-h320dp-port-v13/values-h320dp-port-v13.xml",
             "map": [
                 {
-                    "source": "/Users/jorge/.gradle/caches/8.11.1/transforms/4d381a07e9b73b0a8c45001ae13bf594/transformed/material-1.12.0/res/values-h320dp-port-v13/values-h320dp-port-v13.xml",
+                    "source": "/Users/jorge/.gradle/caches/8.11.1/transforms/946cbf5d1ac795e6341aac29d51d1131/transformed/material-1.12.0/res/values-h320dp-port-v13/values-h320dp-port-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

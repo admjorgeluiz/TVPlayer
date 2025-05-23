@@ -7,6 +7,8 @@ drawable ic_android_black_24dp
 drawable ic_launcher_background
 drawable ic_launcher_foreground
 drawable icons8_plus
+id adViewChannelList
+id adViewMain
 id btnSave
 id btnSelectFile
 id btnViewList
@@ -31,6 +33,7 @@ layout item_channel
 mipmap ic_launcher
 mipmap ic_launcher_adaptive_back
 mipmap ic_launcher_adaptive_fore
+string ad_unit_banner
 string app_name
 string back_button
 string buscar_canal

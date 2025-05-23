@@ -10,6 +10,7 @@ import org.videolan.libvlc.LibVLC
 import org.videolan.libvlc.Media
 import org.videolan.libvlc.MediaPlayer
 import org.videolan.libvlc.util.VLCVideoLayout
+import android.view.View
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -69,6 +70,21 @@ class PlayerActivity : AppCompatActivity() {
         // Inicia a reprodução
         playMedia(channelUrl)
     }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            or View.SYSTEM_UI_FLAG_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    )
+        }
+    }
+
 
     /**
      * Inicia a reprodução do stream a partir da URL informada.
