@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tvplayer"
+    namespace = "com.jorgenascimento.tvplayer"
     compileSdk = 35
 
     defaultConfig {

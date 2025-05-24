@@ -12,6 +12,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tvplayer.R
 import com.example.tvplayer.ui.list.ChannelListActivity
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 
 class ListConfigActivity : AppCompatActivity() {
 
@@ -20,6 +23,7 @@ class ListConfigActivity : AppCompatActivity() {
     private lateinit var btnSave: Button
     private lateinit var btnSelectFile: Button
     private lateinit var btnViewList: Button
+    private lateinit var adView: AdView
 
     private val PREFS_NAME = "tvplayer_prefs"
     private val KEY_LIST_URL = "list_url"
@@ -68,7 +72,15 @@ class ListConfigActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Inicializa o SDK de Ads
+        MobileAds.initialize(this)
+
         setContentView(R.layout.activity_list_config)
+
+        // Banner no rodapé
+        adView = findViewById(R.id.adViewMain)
+        adView.loadAd(AdRequest.Builder().build())
 
         edtListName = findViewById(R.id.edtListName)
         edtListUrl = findViewById(R.id.edtListUrl)
