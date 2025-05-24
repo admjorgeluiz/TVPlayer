@@ -48,10 +48,6 @@
         "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-45:/layout/activity_list_config.xml"
     },
     {
-        "merged": "com.example.tvplayer.app-debug-43:/layout_activity_channel_list.xml.flat",
-        "source": "com.example.tvplayer.app-main-45:/layout/activity_channel_list.xml"
-    },
-    {
         "merged": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-debug-43:/mipmap-hdpi_ic_launcher_adaptive_back.png.flat",
         "source": "/Users/jorge/.gradle/daemon/8.11.1/com.example.tvplayer.app-main-45:/mipmap-hdpi/ic_launcher_adaptive_back.png"
     },

@@ -4128,6 +4128,7 @@ string mtrl_switch_track_decoration_path
 string mtrl_switch_track_path
 string mtrl_timepicker_cancel
 string mtrl_timepicker_confirm
+string nenhuma_lista_selecionada
 string nome_da_lista
 string offline_notification_text
 string offline_notification_title

@@ -12,4 +12,5 @@
     <string name="carregar_do_arquivo">Carregar do Arquivo</string>
     <string name="buscar_canal">Buscar canal...</string>
     <string name="ad_unit_banner">ca-app-pub-2298650638489458/3122875797</string>
+    <string name="nenhuma_lista_selecionada">Nenhuma lista selecionada</string>
 </resources>

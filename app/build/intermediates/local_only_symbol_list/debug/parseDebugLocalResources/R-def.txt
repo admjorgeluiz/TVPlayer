@@ -42,6 +42,7 @@ string channel_logo
 string channel_name
 string digite_a_url_da_lista_m3u
 string label_load_m3u
+string nenhuma_lista_selecionada
 string nome_da_lista
 string salvar
 string url_da_lista_m3u
