@@ -1,16 +1,16 @@
-#Fri May 23 23:41:19 BRT 2025
-base.0=/Users/jorge/AndroidStudioProjects/TVPlayer/app/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
-base.1=/Users/jorge/AndroidStudioProjects/TVPlayer/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
-base.2=/Users/jorge/AndroidStudioProjects/TVPlayer/app/build/intermediates/dex/debug/mergeProjectDexDebug/1/classes.dex
-base.3=/Users/jorge/AndroidStudioProjects/TVPlayer/app/build/intermediates/dex/debug/mergeProjectDexDebug/13/classes.dex
-base.4=/Users/jorge/AndroidStudioProjects/TVPlayer/app/build/intermediates/dex/debug/mergeProjectDexDebug/2/classes.dex
-base.5=/Users/jorge/AndroidStudioProjects/TVPlayer/app/build/intermediates/dex/debug/mergeProjectDexDebug/8/classes.dex
-base.6=/Users/jorge/AndroidStudioProjects/TVPlayer/app/build/intermediates/dex/debug/mergeProjectDexDebug/9/classes.dex
-base.7=/Users/jorge/AndroidStudioProjects/TVPlayer/app/build/intermediates/dex/debug/mergeExtDexDebug/classes2.dex
+#Sat May 24 09:51:55 BRT 2025
+base.0=C\:\\Users\\Jorge\\Documents\\TVPlayer\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+base.1=C\:\\Users\\Jorge\\Documents\\TVPlayer\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.2=C\:\\Users\\Jorge\\Documents\\TVPlayer\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\13\\classes.dex
+base.3=C\:\\Users\\Jorge\\Documents\\TVPlayer\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\1\\classes.dex
+base.4=C\:\\Users\\Jorge\\Documents\\TVPlayer\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\2\\classes.dex
+base.5=C\:\\Users\\Jorge\\Documents\\TVPlayer\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\8\\classes.dex
+base.6=C\:\\Users\\Jorge\\Documents\\TVPlayer\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\9\\classes.dex
+base.7=C\:\\Users\\Jorge\\Documents\\TVPlayer\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
 path.0=classes.dex
 path.1=0/classes.dex
-path.2=1/classes.dex
-path.3=13/classes.dex
+path.2=13/classes.dex
+path.3=1/classes.dex
 path.4=2/classes.dex
 path.5=8/classes.dex
 path.6=9/classes.dex
