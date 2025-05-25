@@ -2,4 +2,5 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-</resources>
+    <color name="colorPrimary">#FF6200EE</color> <color name="fab_icon_tint">@color/white</color>
+    <color name="toolbar_background">@color/colorPrimary</color> </resources>

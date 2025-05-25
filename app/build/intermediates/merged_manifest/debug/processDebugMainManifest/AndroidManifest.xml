@@ -50,15 +50,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TVPlayer"
-        android:usesCleartextTraffic="true" >
+        android:testOnly="true"
+        android:theme="@style/Theme.TVPlayer" >
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-2298650638489458~4037320451" />
 
-        <!-- Tela de Configuração: Tela inicial -->
         <activity
-            android:name="com.jorgenascimento.tvplayer.ui.config.ListConfigActivity"
+            android:name="com.jorgenascimento.tvplayer.ui.main.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -66,18 +65,33 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- Tela de exibição da lista -->
+        <activity
+            android:name="com.jorgenascimento.tvplayer.ui.config.ListConfigActivity"
+            android:exported="false" />
         <activity
             android:name="com.jorgenascimento.tvplayer.ui.list.ChannelListActivity"
-            android:exported="true" />
-
-        <!-- Tela de reprodução -->
+            android:exported="false" />
         <activity
             android:name="com.jorgenascimento.tvplayer.ui.player.PlayerActivity"
-            android:exported="true" />
+            android:exported="false" />
 
-        <!-- Include the AdActivity and InAppPurchaseActivity configChanges and themes. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="com.jorgenascimento.tvplayer.androidx-startup"
+            android:exported="false" >
+            <meta-data
+                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+                android:value="androidx.startup" />
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup" />
+            <meta-data
+                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+                android:value="androidx.startup" />
+            <meta-data
+                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+                android:value="androidx.startup" />
+        </provider> <!-- Include the AdActivity and InAppPurchaseActivity configChanges and themes. -->
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
@@ -103,24 +117,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="com.jorgenascimento.tvplayer.androidx-startup"
-            android:exported="false" >
-            <meta-data
-                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-                android:value="androidx.startup" />
-            <meta-data
-                android:name="androidx.work.WorkManagerInitializer"
-                android:value="androidx.startup" />
-            <meta-data
-                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-                android:value="androidx.startup" />
-            <meta-data
-                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-                android:value="androidx.startup" />
-        </provider>
 
         <service
             android:name="androidx.work.impl.background.systemalarm.SystemAlarmService"

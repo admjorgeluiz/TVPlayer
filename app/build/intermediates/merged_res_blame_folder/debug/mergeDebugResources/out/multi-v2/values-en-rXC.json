@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.jorgenascimento.tvplayer.app-mergeDebugResources-41:/values-en-rXC/values-en-rXC.xml",
+            "outputFile": "com.jorgenascimento.tvplayer.app-mergeDebugResources-46:/values-en-rXC/values-en-rXC.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Jorge\\.gradle\\caches\\8.11.1\\transforms\\36f3698a363995e330ea0aab27db1d97\\transformed\\core-1.16.0\\res\\values-en-rXC\\values-en-rXC.xml",
+                    "source": "C:\\Users\\Jorge\\.gradle\\caches\\8.11.1\\transforms\\6c9dfd79541d59110a506ecd9ddd4506\\transformed\\core-1.16.0\\res\\values-en-rXC\\values-en-rXC.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Jorge\\.gradle\\caches\\8.11.1\\transforms\\332b59f98457c772868d5dc4506af819\\transformed\\browser-1.4.0\\res\\values-en-rXC\\values-en-rXC.xml",
+                    "source": "C:\\Users\\Jorge\\.gradle\\caches\\8.11.1\\transforms\\d118369e2e39a01e63703e1b588377cc\\transformed\\browser-1.4.0\\res\\values-en-rXC\\values-en-rXC.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",
@@ -38,7 +38,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Jorge\\.gradle\\caches\\8.11.1\\transforms\\cf5d6a4ba79ee36155f1b3dcfd1973e6\\transformed\\appcompat-1.7.0\\res\\values-en-rXC\\values-en-rXC.xml",
+                    "source": "C:\\Users\\Jorge\\.gradle\\caches\\8.11.1\\transforms\\579b393aec08806ed766bd3222c089b2\\transformed\\appcompat-1.7.0\\res\\values-en-rXC\\values-en-rXC.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",

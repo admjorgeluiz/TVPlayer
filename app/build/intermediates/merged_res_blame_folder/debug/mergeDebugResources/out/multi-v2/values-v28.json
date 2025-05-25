@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.jorgenascimento.tvplayer.app-mergeDebugResources-41:/values-v28/values-v28.xml",
+            "outputFile": "com.jorgenascimento.tvplayer.app-mergeDebugResources-46:/values-v28/values-v28.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Jorge\\.gradle\\caches\\8.11.1\\transforms\\946cbf5d1ac795e6341aac29d51d1131\\transformed\\material-1.12.0\\res\\values-v28\\values-v28.xml",
+                    "source": "C:\\Users\\Jorge\\.gradle\\caches\\8.11.1\\transforms\\087442f7d1ecb748b481ee09c27d6789\\transformed\\material-1.12.0\\res\\values-v28\\values-v28.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Jorge\\.gradle\\caches\\8.11.1\\transforms\\cf5d6a4ba79ee36155f1b3dcfd1973e6\\transformed\\appcompat-1.7.0\\res\\values-v28\\values-v28.xml",
+                    "source": "C:\\Users\\Jorge\\.gradle\\caches\\8.11.1\\transforms\\579b393aec08806ed766bd3222c089b2\\transformed\\appcompat-1.7.0\\res\\values-v28\\values-v28.xml",
                     "from": {
                         "startLines": "2,3,4,8",
                         "startColumns": "4,4,4,4",
