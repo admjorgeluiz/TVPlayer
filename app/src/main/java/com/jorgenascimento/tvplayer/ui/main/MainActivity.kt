@@ -10,36 +10,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels // Import para by viewModels()
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer // Import para Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.jorgenascimento.tvplayer.R
 import com.jorgenascimento.tvplayer.data.model.M3UItem
-import com.jorgenascimento.tvplayer.data.parser.M3UParser
+// M3UParser não é mais usado diretamente aqui, mas sim no ViewModel
 import com.jorgenascimento.tvplayer.databinding.ActivityMainBinding
 import com.jorgenascimento.tvplayer.databinding.DialogInputUrlBinding
 import com.jorgenascimento.tvplayer.ui.player.PlayerActivity
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.BufferedReader
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.SocketTimeoutException
-import java.net.URL
+// kotlinx.coroutines não são mais usados diretamente aqui para carregar a lista
 
-// Definições de Categoria (podem ficar fora da classe se preferir)
+// Definições de Categoria (podem ficar fora da classe se preferir, ou no ViewModel)
 enum class ChannelCategory {
     ALL, CHANNELS, MOVIES, SERIES, OTHERS
 }
 
 fun getChannelCategoryFromString(groupTitle: String?): ChannelCategory {
     val titleLower = groupTitle?.trim()?.lowercase() ?: return ChannelCategory.OTHERS
-    // Prioridade para termos mais específicos para evitar classificações erradas
     if (titleLower.startsWith("séries") || titleLower.startsWith("series") || titleLower.startsWith("tv shows")) {
         return ChannelCategory.SERIES
     }
@@ -50,7 +43,6 @@ fun getChannelCategoryFromString(groupTitle: String?): ChannelCategory {
         titleLower.startsWith("tv") || titleLower.startsWith("live") || titleLower.startsWith("ao vivo")) {
         return ChannelCategory.CHANNELS
     }
-    // Adicione mais palavras-chave ou lógicas se necessário
     return ChannelCategory.OTHERS
 }
 
@@ -60,7 +52,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var channelAdapter: ChannelAdapter
 
-    private var fullChannelList: List<M3UItem> = emptyList()
+    // SR_CORRECTION: Obter instância do ViewModel
+    private val channelViewModel: ChannelViewModel by viewModels()
+
+    // fullChannelList agora é gerenciada pelo ViewModel
     private var listFilteredByCategory: List<M3UItem> = emptyList()
     private var currentSelectedCategory: ChannelCategory = ChannelCategory.ALL
 
@@ -69,8 +64,7 @@ class MainActivity : AppCompatActivity() {
         private const val KEY_LIST_URL = "list_url"
         private const val KEY_LIST_NAME = "list_name"
         private const val TAG = "MainActivity"
-        private const val CONNECT_TIMEOUT = 15_000
-        private const val READ_TIMEOUT = 15_000
+        // Timeouts agora estão no ViewModel
     }
 
     private val filePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -81,7 +75,8 @@ class MainActivity : AppCompatActivity() {
                 Log.w(TAG, "Falha ao persistir permissão para URI: $selectedUri", e)
             }
             val fileName = getFileNameFromUri(selectedUri) ?: getString(R.string.dialog_option_arquivo_local)
-            loadM3UFromSource(selectedUri.toString(), fileName)
+            // SR_CORRECTION: Chamar o ViewModel para carregar
+            channelViewModel.loadM3UFromSourceIfNotLoaded(selectedUri.toString(), fileName, applicationContext)
         }
     }
 
@@ -98,7 +93,57 @@ class MainActivity : AppCompatActivity() {
         setupSearch()
         setupFab()
 
-        loadSavedList()
+        observeViewModel() // Observar mudanças do ViewModel
+
+        // SR_CORRECTION: A lógica de carregar a lista salva agora também usa o ViewModel
+        // Se não houver estado salvo no ViewModel (primeira vez), então carrega dos SharedPreferences
+        if (channelViewModel.channelListState.value is ListLoadingState.Idle || channelViewModel.channelListState.value == null) {
+            loadSavedListFromPrefs()
+        }
+    }
+
+    private fun observeViewModel() {
+        channelViewModel.channelListState.observe(this, Observer { state ->
+            when (state) {
+                is ListLoadingState.Loading -> {
+                    binding.progressBarLoading.visibility = View.VISIBLE
+                    channelAdapter.submitList(null) // Limpa a lista na UI
+                    // Não limpe listFilteredByCategory aqui, pois pode ser usado pela busca
+                }
+                is ListLoadingState.Success -> {
+                    binding.progressBarLoading.visibility = View.GONE
+                    // A fullChannelList agora está no ViewModel
+                    // A Activity só precisa saber o nome da lista e a fonte para UI e SharedPreferences
+                    updateListInfoUI(state.listName, state.sourceIdentifier)
+                    saveListConfigToPrefs(state.listName, state.sourceIdentifier) // Salva nos prefs se carregado com sucesso
+
+                    // Atualiza a lista de categorias e aplica o filtro da categoria selecionada
+                    val currentTabPosition = binding.tabLayoutCategories.selectedTabPosition
+                    if (currentTabPosition != -1 && currentTabPosition < binding.tabLayoutCategories.tabCount) {
+                        updateChannelListForCategory() // Usa channelViewModel.fullChannelList
+                    } else if (binding.tabLayoutCategories.tabCount > 0) {
+                        binding.tabLayoutCategories.getTabAt(0)?.select()
+                    }
+
+                    if (channelViewModel.fullChannelList.isEmpty() && state.sourceIdentifier.startsWith("http")) {
+                        Toast.makeText(this, "Lista '${state.listName}' carregada, mas nenhum canal válido foi encontrado ou o formato é inválido.", Toast.LENGTH_LONG).show()
+                    } else if (channelViewModel.fullChannelList.isEmpty()) {
+                        Toast.makeText(this, "Lista '${state.listName}' carregada está vazia.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Lista '${state.listName}' carregada com ${channelViewModel.fullChannelList.size} canais.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                is ListLoadingState.Error -> {
+                    binding.progressBarLoading.visibility = View.GONE
+                    Toast.makeText(this, state.message, Toast.LENGTH_LONG).show()
+                    handleLoadErrorUI()
+                }
+                is ListLoadingState.Idle -> {
+                    binding.progressBarLoading.visibility = View.GONE
+                    // Estado inicial, pode não precisar fazer nada ou mostrar mensagem "nenhuma lista"
+                }
+            }
+        })
     }
 
     private fun setupRecyclerView() {
@@ -111,7 +156,7 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerViewChannels.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = channelAdapter
-            itemAnimator = null // Mantido para melhor performance com grandes listas/filtros
+            itemAnimator = null
         }
     }
 
@@ -138,11 +183,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateChannelListForCategory() {
-        // Log.d(TAG, "Atualizando lista para categoria: $currentSelectedCategory. Total de canais na lista completa: ${fullChannelList.size}")
+        // Log.d(TAG, "Atualizando lista para categoria: $currentSelectedCategory. Total de canais na lista do ViewModel: ${channelViewModel.fullChannelList.size}")
         listFilteredByCategory = if (currentSelectedCategory == ChannelCategory.ALL) {
-            fullChannelList
+            channelViewModel.fullChannelList // Usa a lista do ViewModel
         } else {
-            fullChannelList.filter { getChannelCategoryFromString(it.groupTitle) == currentSelectedCategory }
+            channelViewModel.fullChannelList.filter { getChannelCategoryFromString(it.groupTitle) == currentSelectedCategory }
         }
         // Log.d(TAG, "Número de itens após filtro de categoria: ${listFilteredByCategory.size}")
         applyTextSearchFilter()
@@ -156,8 +201,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun applyTextSearchFilter() {
         val query = binding.edtSearch.text.toString().trim().lowercase()
-        // Log.d(TAG, "Aplicando filtro de texto: '$query' na lista de categoria de tamanho ${listFilteredByCategory.size}")
-
         val listToSubmit: List<M3UItem> = if (query.isEmpty()) {
             listFilteredByCategory
         } else {
@@ -165,13 +208,11 @@ class MainActivity : AppCompatActivity() {
                 item.name.lowercase().contains(query)
             }
         }
-
-        // Log.d(TAG, "Submetendo ${listToSubmit.size} itens ao adapter.")
         channelAdapter.submitList(null)
-        channelAdapter.submitList(ArrayList(listToSubmit)) // Envia uma nova cópia da lista
+        channelAdapter.submitList(ArrayList(listToSubmit))
 
         if (listToSubmit.isNotEmpty()) {
-            binding.recyclerViewChannels.post { // Garante que o scroll aconteça após a UI ser atualizada
+            binding.recyclerViewChannels.post {
                 binding.recyclerViewChannels.scrollToPosition(0)
             }
         }
@@ -181,19 +222,22 @@ class MainActivity : AppCompatActivity() {
         binding.fabLoadM3U.setOnClickListener { showLoadOptionsDialog() }
     }
 
-    private fun loadSavedList() {
+    // SR_CORRECTION: Renomeado para clareza
+    private fun loadSavedListFromPrefs() {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val savedUrl = prefs.getString(KEY_LIST_URL, null)
         val savedName = prefs.getString(KEY_LIST_NAME, null)
 
         if (!savedUrl.isNullOrBlank() && !savedName.isNullOrBlank()) {
-            updateListInfoUI(savedName, savedUrl)
-            loadM3UFromSource(savedUrl, savedName)
+            // Não chama updateListInfoUI diretamente, o ViewModel fará isso via LiveData
+            channelViewModel.loadM3UFromSourceIfNotLoaded(savedUrl, savedName, applicationContext)
         } else {
             binding.tvCurrentListInfo.text = getString(R.string.nenhuma_lista_selecionada)
-            // Garante que a lista (vazia) seja processada pelas categorias ao iniciar
-            fullChannelList = emptyList() // Garante que fullChannelList esteja vazia
-            updateChannelListForCategory()
+            // A lista já estará vazia no ViewModel ou será tratada pelo estado Idle
+            channelViewModel.fullChannelList.let { // Acessa a lista do ViewModel
+                listFilteredByCategory = if (currentSelectedCategory == ChannelCategory.ALL) it else it.filter { item -> getChannelCategoryFromString(item.groupTitle) == currentSelectedCategory }
+                applyTextSearchFilter()
+            }
         }
     }
 
@@ -225,7 +269,8 @@ class MainActivity : AppCompatActivity() {
                 val url = dialogBinding.edtUrlM3U.text.toString().trim()
                 val name = dialogBinding.edtListName.text.toString().trim()
                 if (url.isNotEmpty() && name.isNotEmpty()) {
-                    loadM3UFromSource(url, name)
+                    // SR_CORRECTION: Chamar o ViewModel para carregar
+                    channelViewModel.loadM3UFromSourceIfNotLoaded(url, name, applicationContext)
                 } else {
                     Toast.makeText(this, getString(R.string.toast_insira_nome_url_validos), Toast.LENGTH_SHORT).show()
                 }
@@ -235,113 +280,20 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun loadM3UFromSource(sourceUrlOrUri: String, listName: String) {
-        binding.progressBarLoading.visibility = View.VISIBLE
-        channelAdapter.submitList(null)
-        fullChannelList = emptyList()
+    // SR_CORRECTION: loadM3UFromSource, openStreamReader, e processParsedM3UList foram movidos para o ViewModel
+    // A Activity agora chama channelViewModel.loadM3UFromSourceIfNotLoaded(...)
 
-        lifecycleScope.launch {
-            try {
-                val parsedList: List<M3UItem> = withContext(Dispatchers.IO) {
-                    openStreamReader(sourceUrlOrUri).use { reader ->
-                        M3UParser.parseStream(reader)
-                    }
-                }
-                withContext(Dispatchers.Main) { // Garante que as atualizações de UI ocorram na thread principal
-                    processParsedM3UList(parsedList, listName, sourceUrlOrUri)
-                    saveListConfig(listName, sourceUrlOrUri)
-                }
-            } catch (e: SocketTimeoutException) {
-                Log.e(TAG, "Timeout ao carregar M3U de: $sourceUrlOrUri", e)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, getString(R.string.toast_timeout_baixar_lista), Toast.LENGTH_LONG).show()
-                    handleLoadError()
-                }
-            } catch (e: IOException) {
-                Log.e(TAG, "IOException ao carregar M3U de: $sourceUrlOrUri", e)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, getString(R.string.toast_erro_generico_carregar_lista), Toast.LENGTH_LONG).show()
-                    handleLoadError()
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Erro geral ao carregar M3U de: $sourceUrlOrUri", e)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, getString(R.string.toast_erro_carregar_lista, e.localizedMessage ?: "Desconhecido"), Toast.LENGTH_LONG).show()
-                    handleLoadError()
-                }
-            } finally {
-                withContext(Dispatchers.Main) {
-                    binding.progressBarLoading.visibility = View.GONE
-                }
-            }
+    private fun handleLoadErrorUI() { // Renomeado para clareza, pois só atualiza UI
+        // A lista no ViewModel já estará vazia ou o estado será Error
+        channelViewModel.fullChannelList.let { // Acessa a lista do ViewModel
+            listFilteredByCategory = if (currentSelectedCategory == ChannelCategory.ALL) it else it.filter { item -> getChannelCategoryFromString(item.groupTitle) == currentSelectedCategory }
+            applyTextSearchFilter()
         }
-    }
-
-    @Throws(IOException::class, SocketTimeoutException::class)
-    private fun openStreamReader(source: String): BufferedReader {
-        return if (source.startsWith("content:")) {
-            val uri = Uri.parse(source)
-            contentResolver.openInputStream(uri)?.bufferedReader()
-                ?: throw IOException(getString(R.string.toast_erro_abrir_uri_local, uri.toString()))
-        } else {
-            val url = URL(source)
-            val connection = url.openConnection() as HttpURLConnection
-            connection.connectTimeout = CONNECT_TIMEOUT
-            connection.readTimeout = READ_TIMEOUT
-            connection.instanceFollowRedirects = true
-
-            val responseCode = connection.responseCode
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                connection.inputStream.bufferedReader()
-            } else {
-                val errorStreamMessage = connection.errorStream?.bufferedReader()?.readText() ?: "Sem detalhes adicionais."
-                connection.disconnect()
-                throw IOException("Erro de conexão HTTP: $responseCode. $errorStreamMessage")
-            }
-        }
-    }
-
-    private fun processParsedM3UList(parsedList: List<M3UItem>, listName: String, sourceIdentifier: String) {
-        // Log.d(TAG, "Iniciando processParsedM3UList para lista: '$listName'")
-        fullChannelList = parsedList
-        // Log.d(TAG, "M3UParser retornou ${fullChannelList.size} canais.")
-        // if (fullChannelList.isNotEmpty()) {
-        //      Log.d(TAG, "Exemplo do primeiro canal parseado: Nome='${fullChannelList.first().name}', Grupo='${fullChannelList.first().groupTitle}', Logo='${fullChannelList.first().logo}'")
-        // }
-
-        updateListInfoUI(listName, sourceIdentifier)
-
-        // Força a reavaliação da categoria atual com a nova fullChannelList
-        // Se as abas já estiverem configuradas, selecionar a aba padrão irá acionar updateChannelListForCategory
-        // Se for a primeira carga, ou se a aba selecionada for inválida, seleciona a primeira aba ("Todos")
-        val currentTabPosition = binding.tabLayoutCategories.selectedTabPosition
-        if (currentTabPosition != -1 && currentTabPosition < binding.tabLayoutCategories.tabCount) {
-            // A aba já está selecionada, apenas atualize a lista para ela
-            updateChannelListForCategory()
-        } else if (binding.tabLayoutCategories.tabCount > 0) {
-            binding.tabLayoutCategories.getTabAt(0)?.select() // Isso vai acionar onTabSelected e, por sua vez, updateChannelListForCategory
-        } else {
-            // Caso de emergência se não houver abas (não deveria acontecer)
-            channelAdapter.submitList(fullChannelList)
-        }
-
-
-        if (fullChannelList.isEmpty() && sourceIdentifier.startsWith("http")) {
-            Toast.makeText(this, "Lista '$listName' carregada, mas nenhum canal válido foi encontrado ou o formato é inválido.", Toast.LENGTH_LONG).show()
-        } else if (fullChannelList.isEmpty()) {
-            Toast.makeText(this, "Lista '$listName' carregada está vazia.", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Lista '$listName' carregada com ${fullChannelList.size} canais.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun handleLoadError() {
-        fullChannelList = emptyList()
-        updateChannelListForCategory() // Garante que a lista vazia seja refletida na categoria atual
         binding.tvCurrentListInfo.text = getString(R.string.nenhuma_lista_selecionada)
     }
 
-    private fun saveListConfig(listName: String, listUrlOrUri: String) {
+    // SR_CORRECTION: Renomeado para clareza
+    private fun saveListConfigToPrefs(listName: String, listUrlOrUri: String) {
         getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().apply {
             putString(KEY_LIST_NAME, listName)
             putString(KEY_LIST_URL, listUrlOrUri)

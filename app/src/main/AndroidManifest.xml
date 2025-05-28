@@ -15,10 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.TVPlayer"
-        tools:targetApi="31">
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2298650638489458~4037320451" />
+        android:usesCleartextTraffic="true"> <meta-data
+        android:name="com.google.android.gms.ads.APPLICATION_ID"
+        android:value="ca-app-pub-2298650638489458~4037320451" />
+
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">
@@ -31,12 +31,18 @@
         <activity
             android:name=".ui.config.ListConfigActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.list.ChannelListActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.player.PlayerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:theme="@style/Theme.AppCompat.NoActionBar" /> <!-- Se você já tem um tema de tela cheia em styles.xml, use-o aqui.
+                 Ex: android:theme="@style/Theme.TVPlayer.FullScreen" -->
+
     </application>
 
 </manifest>

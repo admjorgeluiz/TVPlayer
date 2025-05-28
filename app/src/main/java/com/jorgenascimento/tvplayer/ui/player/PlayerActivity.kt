@@ -1,6 +1,6 @@
 package com.jorgenascimento.tvplayer.ui.player
 
-import android.annotation.SuppressLint
+import android.content.res.Configuration // Import para onConfigurationChanged
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -27,12 +27,13 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     private val handler = Handler(Looper.getMainLooper())
     private var isControlsVisible = true
     private val hideControlsRunnable = Runnable { hideControls() }
-    private val controlsTimeoutMs = 3000L // 3 segundos
+    private val controlsTimeoutMs = 3000L
 
     companion object {
         private const val TAG = "PlayerActivity"
-        private const val DEFAULT_NETWORK_CACHING = 1500 //ms
+        private const val DEFAULT_NETWORK_CACHING = 1500
         private const val POSITION_UPDATE_INTERVAL_MS = 500L
+        private const val KEY_CURRENT_CHANNEL_URL = "current_channel_url" // Para salvar estado se não usar configChanges
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,19 +42,57 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
         setContentView(binding.root)
 
         supportActionBar?.hide()
-        hideSystemUI() // Entra em modo imersivo
+        // hideSystemUI() // Chamado em onWindowFocusChanged e onResume para garantir
 
-        val channelUrl = intent.getStringExtra("channel_url")
-        if (channelUrl.isNullOrEmpty()) {
+        val channelUrlToPlay: String?
+        if (savedInstanceState != null) {
+            // Se estivéssemos a restaurar estado sem configChanges:
+            // channelUrlToPlay = savedInstanceState.getString(KEY_CURRENT_CHANNEL_URL)
+            // Log.d(TAG, "Restaurando URL do savedInstanceState: $channelUrlToPlay")
+            channelUrlToPlay = intent.getStringExtra("channel_url") // Com configChanges, o intent original ainda é válido
+        } else {
+            channelUrlToPlay = intent.getStringExtra("channel_url")
+            Log.d(TAG, "Obtendo URL do Intent: $channelUrlToPlay")
+        }
+
+
+        if (channelUrlToPlay.isNullOrEmpty()) {
             Toast.makeText(this, getString(R.string.toast_url_canal_nao_encontrada), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
-        Log.d(TAG, "A reproduzir canal: $channelUrl")
+        Log.d(TAG, "A reproduzir canal: $channelUrlToPlay")
 
-        setupPlayer(channelUrl)
+        setupPlayer(channelUrlToPlay)
         setupControls()
     }
+
+    // Se você usar android:configChanges, este método será chamado em vez de recriar a Activity.
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Log.d(TAG, "onConfigurationChanged: Nova orientação: ${newConfig.orientation}")
+        // O LibVLC geralmente lida bem com a mudança de tamanho da surface.
+        // Você pode adicionar lógica aqui se precisar ajustar a UI dos seus controlos personalizados.
+        // Por exemplo, se os controlos tivessem um layout diferente para paisagem/retrato.
+        // Como o VLCVideoLayout ocupa match_parent, ele deve se ajustar.
+        // É uma boa prática chamar hideSystemUI() novamente para garantir o modo imersivo.
+        hideSystemUI()
+    }
+
+
+    // Se você NÃO usar configChanges e quiser salvar o estado manualmente:
+    // override fun onSaveInstanceState(outState: Bundle) {
+    //     super.onSaveInstanceState(outState)
+    //     if (::mediaPlayer.isInitialized) {
+    //         val currentUrl = intent.getStringExtra("channel_url") // Ou se você guardar a URL numa variável de membro
+    //         if (currentUrl != null) {
+    //             outState.putString(KEY_CURRENT_CHANNEL_URL, currentUrl)
+    //             Log.d(TAG, "Salvando URL no onSaveInstanceState: $currentUrl")
+    //         }
+    //         // Salvar a posição atual também seria ideal aqui
+    //     }
+    // }
+
 
     private fun setupPlayer(url: String) {
         val options = arrayListOf("--network-caching=$DEFAULT_NETWORK_CACHING")
@@ -78,6 +117,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     }
 
     private fun setupControls() {
+        binding.buttonBack.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+            resetControlsTimeout()
+        }
+
         binding.buttonPlayPause.setOnClickListener {
             if (mediaPlayer.isPlaying) {
                 mediaPlayer.pause()
@@ -86,7 +130,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
                 mediaPlayer.play()
                 binding.buttonPlayPause.setImageResource(R.drawable.ic_player_pause)
             }
-            resetControlsTimeout() // Mostra os controlos ao interagir
+            resetControlsTimeout()
         }
 
         binding.seekBarProgress.setOnSeekBarChangeListener(this)
@@ -94,7 +138,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
         binding.playerRootLayout.setOnClickListener {
             toggleControlsVisibility()
         }
-        scheduleHideControls() // Esconde os controlos após um tempo
+        scheduleHideControls()
     }
 
     private fun toggleControlsVisibility() {
@@ -122,24 +166,25 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     }
 
     private fun resetControlsTimeout() {
-        showControls() // Garante que os controlos estão visíveis
+        showControls()
         scheduleHideControls()
     }
 
 
     private val updateProgressRunnable: Runnable = object : Runnable {
         override fun run() {
-            if (mediaPlayer.isPlaying) {
+            if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
                 val pos = mediaPlayer.position
                 binding.seekBarProgress.progress = (pos * binding.seekBarProgress.max).toInt()
                 binding.textCurrentTime.text = formatTime(mediaPlayer.time)
             }
-            if (mediaPlayer.length > 0 && binding.seekBarProgress.max.toLong() != mediaPlayer.length) {
-                // Atualiza o max da seekbar se o length mudar (para streams ao vivo pode não ser fixo)
-                binding.seekBarProgress.max = mediaPlayer.length.toInt() // Ou um valor fixo como 1000 e calcular percentagem
+            if (::mediaPlayer.isInitialized && mediaPlayer.length > 0 && binding.seekBarProgress.max.toLong() != mediaPlayer.length) {
+                binding.seekBarProgress.max = mediaPlayer.length.toInt().takeIf { it > 0 } ?: 1000
                 binding.textTotalTime.text = formatTime(mediaPlayer.length)
             }
-            handler.postDelayed(this, POSITION_UPDATE_INTERVAL_MS)
+            if (::mediaPlayer.isInitialized && !isFinishing && !isDestroyed) { // Continua a agendar apenas se o player e activity estiverem válidos
+                handler.postDelayed(this, POSITION_UPDATE_INTERVAL_MS)
+            }
         }
     }
 
@@ -159,89 +204,82 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
 
 
     override fun onEvent(event: MediaPlayer.Event) {
-        runOnUiThread { // Garante que as atualizações da UI ocorram na thread principal
-            when (event.type) {
-                MediaPlayer.Event.Playing -> {
-                    Log.d(TAG, "MediaPlayer Playing")
-                    binding.playerBuffering.visibility = View.GONE
-                    binding.buttonPlayPause.setImageResource(R.drawable.ic_player_pause)
-                    handler.post(updateProgressRunnable)
-                    binding.textTotalTime.text = formatTime(mediaPlayer.length)
-                    binding.seekBarProgress.max = mediaPlayer.length.toInt().takeIf { it > 0 } ?: 1000 // Evita max 0
-                }
-                MediaPlayer.Event.Paused -> {
-                    Log.d(TAG, "MediaPlayer Paused")
-                    binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
-                    handler.removeCallbacks(updateProgressRunnable)
-                }
-                MediaPlayer.Event.Stopped -> {
-                    Log.d(TAG, "MediaPlayer Stopped")
-                    binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
-                    handler.removeCallbacks(updateProgressRunnable)
-                    binding.seekBarProgress.progress = 0
-                    binding.textCurrentTime.text = formatTime(0)
-                }
-                MediaPlayer.Event.EndReached -> {
-                    Log.d(TAG, "MediaPlayer EndReached")
-                    binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play) // Ou um ícone de replay
-                    handler.removeCallbacks(updateProgressRunnable)
-                    binding.seekBarProgress.progress = binding.seekBarProgress.max
-                    binding.textCurrentTime.text = binding.textTotalTime.text
-                    // finish() // Opcional: fechar o player
-                }
-                MediaPlayer.Event.EncounteredError -> {
-                    Log.e(TAG, "Erro de reprodução LibVLC")
-                    Toast.makeText(this, getString(R.string.toast_erro_reproducao), Toast.LENGTH_LONG).show()
-                    binding.playerBuffering.visibility = View.GONE
-                    // finish()
-                }
-                MediaPlayer.Event.Buffering -> {
-                    Log.d(TAG, "MediaPlayer Buffering: ${event.buffering}%")
-                    if (event.buffering >= 100f || !mediaPlayer.isPlaying) { // Se buffer completo ou não está a tocar
+        if (!isFinishing && !isDestroyed) {
+            runOnUiThread {
+                when (event.type) {
+                    MediaPlayer.Event.Playing -> {
+                        Log.d(TAG, "MediaPlayer Playing")
                         binding.playerBuffering.visibility = View.GONE
-                    } else {
-                        binding.playerBuffering.visibility = View.VISIBLE
+                        binding.buttonPlayPause.setImageResource(R.drawable.ic_player_pause)
+                        handler.removeCallbacks(updateProgressRunnable)
+                        handler.post(updateProgressRunnable)
+                        binding.textTotalTime.text = formatTime(mediaPlayer.length)
+                        binding.seekBarProgress.max = mediaPlayer.length.toInt().takeIf { it > 0 } ?: 1000
                     }
-                }
-                MediaPlayer.Event.TimeChanged -> {
-                    // O runnable updateProgressRunnable já lida com isso de forma mais controlada
-                    // binding.textCurrentTime.text = formatTime(event.timeChanged)
-                    // binding.seekBarProgress.progress = (mediaPlayer.position * binding.seekBarProgress.max).toInt()
-                }
-                MediaPlayer.Event.LengthChanged -> {
-                    Log.d(TAG, "MediaPlayer LengthChanged: ${event.lengthChanged}")
-                    binding.textTotalTime.text = formatTime(event.lengthChanged)
-                    binding.seekBarProgress.max = event.lengthChanged.toInt().takeIf { it > 0 } ?: 1000
-                }
-                else -> {
-                    // Log.v(TAG, "Evento MediaPlayer não tratado: ${event.type}")
+                    MediaPlayer.Event.Paused -> {
+                        Log.d(TAG, "MediaPlayer Paused")
+                        binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
+                        handler.removeCallbacks(updateProgressRunnable)
+                    }
+                    MediaPlayer.Event.Stopped -> {
+                        Log.d(TAG, "MediaPlayer Stopped")
+                        binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
+                        handler.removeCallbacks(updateProgressRunnable)
+                        binding.seekBarProgress.progress = 0
+                        binding.textCurrentTime.text = formatTime(0)
+                    }
+                    MediaPlayer.Event.EndReached -> {
+                        Log.d(TAG, "MediaPlayer EndReached")
+                        binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
+                        handler.removeCallbacks(updateProgressRunnable)
+                        binding.seekBarProgress.progress = binding.seekBarProgress.max
+                        binding.textCurrentTime.text = binding.textTotalTime.text
+                    }
+                    MediaPlayer.Event.EncounteredError -> {
+                        Log.e(TAG, "Erro de reprodução LibVLC")
+                        Toast.makeText(this, getString(R.string.toast_erro_reproducao), Toast.LENGTH_LONG).show()
+                        binding.playerBuffering.visibility = View.GONE
+                    }
+                    MediaPlayer.Event.Buffering -> {
+                        Log.d(TAG, "MediaPlayer Buffering: ${event.buffering}%")
+                        if (event.buffering >= 100f || !mediaPlayer.isPlaying) {
+                            binding.playerBuffering.visibility = View.GONE
+                        } else {
+                            binding.playerBuffering.visibility = View.VISIBLE
+                        }
+                    }
+                    MediaPlayer.Event.LengthChanged -> {
+                        Log.d(TAG, "MediaPlayer LengthChanged: ${event.lengthChanged}")
+                        binding.textTotalTime.text = formatTime(event.lengthChanged)
+                        binding.seekBarProgress.max = event.lengthChanged.toInt().takeIf { it > 0 } ?: 1000
+                    }
                 }
             }
         }
     }
 
-    // Implementação de SeekBar.OnSeekBarChangeListener
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         if (fromUser && ::mediaPlayer.isInitialized) {
-            // Converte o progresso da SeekBar (0-max) para a posição do media player (0.0f-1.0f)
             val newPosition = progress.toFloat() / seekBar!!.max.toFloat()
-            mediaPlayer.position = newPosition
-            binding.textCurrentTime.text = formatTime((newPosition * mediaPlayer.length).toLong())
+            if (newPosition in 0f..1f) {
+                mediaPlayer.position = newPosition
+                binding.textCurrentTime.text = formatTime((newPosition * mediaPlayer.length).toLong())
+            }
             resetControlsTimeout()
         }
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
         if (::mediaPlayer.isInitialized) {
-            handler.removeCallbacks(updateProgressRunnable) // Pausa a atualização automática
-            handler.removeCallbacks(hideControlsRunnable) // Mantém os controlos visíveis
+            handler.removeCallbacks(updateProgressRunnable)
+            handler.removeCallbacks(hideControlsRunnable)
         }
     }
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
         if (::mediaPlayer.isInitialized) {
-            handler.post(updateProgressRunnable) // Retoma a atualização automática
-            scheduleHideControls() // Agenda o esconder dos controlos
+            handler.post(updateProgressRunnable)
+            scheduleHideControls()
         }
     }
 
@@ -276,6 +314,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
         super.onPause()
         if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
             mediaPlayer.pause()
+            Log.d(TAG, "Player pausado em onPause()")
         }
         handler.removeCallbacks(updateProgressRunnable)
         handler.removeCallbacks(hideControlsRunnable)
@@ -283,27 +322,32 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
 
     override fun onResume() {
         super.onResume()
+        hideSystemUI() // Garante modo imersivo ao resumir
         if (::mediaPlayer.isInitialized && !mediaPlayer.isPlaying) {
-            // Apenas retoma se não estiver a tocar (pode ter sido pausado ou parado)
-            // Se o media player foi parado ou chegou ao fim, play() pode recomeçar.
+            // Apenas retoma se não estiver a tocar. Se foi parado ou erro, play() pode recomeçar.
+            // Verifique o estado se precisar de lógica mais fina (ex: não dar play se foi 'EndReached' e você não quer replay automático)
             mediaPlayer.play()
+            Log.d(TAG, "Player retomado em onResume()")
         }
-        if (isControlsVisible) { // Se os controlos estavam visíveis, reagenda o esconder
+        if (isControlsVisible) {
             scheduleHideControls()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d(TAG, "onDestroy chamado para PlayerActivity")
         handler.removeCallbacks(updateProgressRunnable)
         handler.removeCallbacks(hideControlsRunnable)
         if (::mediaPlayer.isInitialized) {
+            Log.d(TAG, "Liberando MediaPlayer")
             mediaPlayer.stop()
             mediaPlayer.detachViews()
-            mediaPlayer.setEventListener(null) // Remove o listener
+            mediaPlayer.setEventListener(null)
             mediaPlayer.release()
         }
         if (::libVLC.isInitialized) {
+            Log.d(TAG, "Liberando LibVLC")
             libVLC.release()
         }
     }

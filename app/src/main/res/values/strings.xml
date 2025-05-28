@@ -48,4 +48,7 @@
     <string name="category_series">Séries</string>
     <string name="category_others">Outros</string>
 
+    <string name="player_play_pause_description">Reproduzir ou Pausar</string>
+    <string name="player_back_description">Voltar à lista de canais</string>
+
 </resources>
