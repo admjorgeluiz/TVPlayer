@@ -7,6 +7,7 @@
 
       # Build output
       /app/build/
+      /app/debug/
       **/build/
 
       # Local configuration

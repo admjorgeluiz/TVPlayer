@@ -42,4 +42,10 @@
 
     <string name="ad_unit_banner">ca-app-pub-2298650638489458/3122875797</string>
 
+    <string name="category_all">Todos</string>
+    <string name="category_channels">Canais</string>
+    <string name="category_movies">Filmes</string>
+    <string name="category_series">Séries</string>
+    <string name="category_others">Outros</string>
+
 </resources>
