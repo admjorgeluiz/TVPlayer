@@ -17,7 +17,6 @@ import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-// SR_CORRECTION: import de GestureDetectorCompat removido
 import com.jorgenascimento.tvplayer.R
 import com.jorgenascimento.tvplayer.databinding.ActivityPlayerBinding
 import org.videolan.libvlc.LibVLC
@@ -38,7 +37,6 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     private val hideControlsRunnable = Runnable { hideControls() }
     private val controlsTimeoutMs = 3000L
 
-    // SR_CORRECTION: Usar GestureDetector diretamente
     private lateinit var gestureDetector: GestureDetector
     private lateinit var audioManager: AudioManager
     private var screenWidth: Int = 0
@@ -92,18 +90,26 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     private fun setupPlayer(url: String) {
         Log.d(TAG, "setupPlayer: Configurando player para URL: $url")
         try {
-            val options = arrayListOf("--network-caching=$DEFAULT_NETWORK_CACHING", "--no-sub-autodetect-file")
+            // SR_CORRECTION: Adicionando mais opções de compatibilidade
+            val options = arrayListOf(
+                "--network-caching=$DEFAULT_NETWORK_CACHING",
+                "--no-sub-autodetect-file",
+                "--vout=gles2", // Força o uso do OpenGL ES2 para renderização de vídeo. Resolve muitos problemas de tela preta/cinzenta.
+                "-vvv" // Mantém os logs detalhados para depuração
+            )
             libVLC = LibVLC(this, options)
             mediaPlayer = MediaPlayer(libVLC)
             mediaPlayer.attachViews(binding.videoLayout, null, false, false)
             mediaPlayer.setEventListener(this)
-            Log.d(TAG, "LibVLC e MediaPlayer inicializados.")
+            Log.d(TAG, "LibVLC e MediaPlayer inicializados com opções de compatibilidade.")
 
             val uri = Uri.parse(url)
             val media = Media(libVLC, uri)
 
-            media.setHWDecoderEnabled(false, false)
+            media.setHWDecoderEnabled(false, false) // Mantém a decodificação por software
             Log.i(TAG, "Decodificação por Hardware DESATIVADA para maior compatibilidade.")
+
+            media.addOption(":http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
 
             mediaPlayer.media = media
             media.release()
@@ -142,7 +148,6 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
 
         if(isControlsVisible) scheduleHideControls()
 
-        // SR_CORRECTION: Usar GestureDetector diretamente
         gestureDetector = GestureDetector(this, this)
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
@@ -245,19 +250,12 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
                         binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
                         handler.removeCallbacks(updateProgressRunnable)
                     }
-                    MediaPlayer.Event.Stopped -> {
-                        Log.d(TAG, "MediaPlayer Event: Stopped")
+                    MediaPlayer.Event.Stopped, MediaPlayer.Event.EndReached -> {
+                        Log.d(TAG, "MediaPlayer Event: Stopped or EndReached (type=${event.type})")
                         binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
                         handler.removeCallbacks(updateProgressRunnable)
-                        binding.seekBarProgress.progress = 0
-                        binding.textCurrentTime.text = formatTime(0)
-                    }
-                    MediaPlayer.Event.EndReached -> {
-                        Log.d(TAG, "MediaPlayer Event: EndReached")
-                        binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
-                        handler.removeCallbacks(updateProgressRunnable)
-                        binding.seekBarProgress.progress = binding.seekBarProgress.max
-                        binding.textCurrentTime.text = binding.textTotalTime.text
+                        binding.seekBarProgress.progress = if (event.type == MediaPlayer.Event.EndReached) binding.seekBarProgress.max else 0
+                        binding.textCurrentTime.text = if (event.type == MediaPlayer.Event.EndReached) binding.textTotalTime.text else formatTime(0)
                     }
                     MediaPlayer.Event.EncounteredError -> {
                         Log.e(TAG, "MediaPlayer Event: EncounteredError")
