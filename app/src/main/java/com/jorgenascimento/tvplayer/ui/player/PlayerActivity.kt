@@ -52,6 +52,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     companion object {
         private const val TAG = "PlayerActivity"
         private const val GESTURE_TAG = "PlayerGesture"
+        private const val VLC_TAG = "VLC_DEBUG" // Tag para logs do VLC
         private const val DEFAULT_NETWORK_CACHING = 1500
         private const val POSITION_UPDATE_INTERVAL_MS = 500L
     }
@@ -90,12 +91,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     private fun setupPlayer(url: String) {
         Log.d(TAG, "setupPlayer: Configurando player para URL: $url")
         try {
-            // SR_CORRECTION: Adicionando mais opções de compatibilidade
             val options = arrayListOf(
                 "--network-caching=$DEFAULT_NETWORK_CACHING",
                 "--no-sub-autodetect-file",
-                "--vout=gles2", // Força o uso do OpenGL ES2 para renderização de vídeo. Resolve muitos problemas de tela preta/cinzenta.
-                "-vvv" // Mantém os logs detalhados para depuração
+                "--vout=gles2", // Força o uso do OpenGL ES2 para renderização de vídeo
+                "-vvv" // Nível de log muito verboso
             )
             libVLC = LibVLC(this, options)
             mediaPlayer = MediaPlayer(libVLC)
