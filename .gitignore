@@ -17,6 +17,8 @@ captures/ # Capturas de tela do Android Studio
 # Pastas de Build (saída da compilação)
 # Ignora a pasta 'build' na raiz do projeto e em qualquer submódulo (como 'app/build').
 **/build/
+app/release/
+app/debug/
 
 # Arquivos do Gradle Wrapper
 # É recomendado versionar o gradle-wrapper.properties para garantir builds consistentes.
