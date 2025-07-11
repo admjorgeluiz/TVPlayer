@@ -100,7 +100,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
 
             val uri = Uri.parse(url)
             val media = Media(libVLC, uri)
-            media.setHWDecoderEnabled(true, false)
+
+            // SR_CORRECTION: Desativar a decodificação por hardware para máxima compatibilidade
+            media.setHWDecoderEnabled(false, false)
+            Log.i(TAG, "Decodificação por Hardware DESATIVADA para maior compatibilidade.")
+
             mediaPlayer.media = media
             media.release()
             Log.d(TAG, "Mídia definida no MediaPlayer. A iniciar play().")
@@ -300,14 +304,15 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
         }
         Log.d(GESTURE_TAG, "onDown: x=${e.x.toInt()}, y=${e.y.toInt()}. Vol inicial: $volumeAtGestureStart, Brilho inicial: $brightnessAtGestureStart")
 
-        // SR_CORRECTION: Dividir a tela em três para zonas de gesto mais distintas
-        val oneThirdScreenWidth = screenWidth / 3
-        if (e.x < oneThirdScreenWidth) {
+        val oneQuarterScreenWidth = screenWidth / 4
+        val threeQuartersScreenWidth = screenWidth * 3 / 4
+
+        if (e.x < oneQuarterScreenWidth) {
             gestureControlMode = GestureControlMode.BRIGHTNESS
-            Log.d(GESTURE_TAG, "Modo Gesto: BRILHO (x=${e.x.toInt()} < $oneThirdScreenWidth)")
-        } else if (e.x > screenWidth - oneThirdScreenWidth) { // ou e.x > screenWidth * 2 / 3
+            Log.d(GESTURE_TAG, "Modo Gesto: BRILHO (x=${e.x.toInt()} < $oneQuarterScreenWidth)")
+        } else if (e.x > threeQuartersScreenWidth) {
             gestureControlMode = GestureControlMode.VOLUME
-            Log.d(GESTURE_TAG, "Modo Gesto: VOLUME (x=${e.x.toInt()} > ${screenWidth - oneThirdScreenWidth})")
+            Log.d(GESTURE_TAG, "Modo Gesto: VOLUME (x=${e.x.toInt()} > $threeQuartersScreenWidth)")
         } else {
             gestureControlMode = GestureControlMode.NONE
             Log.d(GESTURE_TAG, "Modo Gesto: NENHUM (zona morta central, x=${e.x.toInt()})")
