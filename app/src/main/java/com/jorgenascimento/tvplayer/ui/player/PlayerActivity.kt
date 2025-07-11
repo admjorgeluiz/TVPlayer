@@ -17,7 +17,7 @@ import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GestureDetectorCompat
+// SR_CORRECTION: import de GestureDetectorCompat removido
 import com.jorgenascimento.tvplayer.R
 import com.jorgenascimento.tvplayer.databinding.ActivityPlayerBinding
 import org.videolan.libvlc.LibVLC
@@ -38,7 +38,8 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     private val hideControlsRunnable = Runnable { hideControls() }
     private val controlsTimeoutMs = 3000L
 
-    private lateinit var gestureDetector: GestureDetectorCompat
+    // SR_CORRECTION: Usar GestureDetector diretamente
+    private lateinit var gestureDetector: GestureDetector
     private lateinit var audioManager: AudioManager
     private var screenWidth: Int = 0
     private var screenHeight: Int = 0
@@ -101,7 +102,6 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
             val uri = Uri.parse(url)
             val media = Media(libVLC, uri)
 
-            // SR_CORRECTION: Desativar a decodificação por hardware para máxima compatibilidade
             media.setHWDecoderEnabled(false, false)
             Log.i(TAG, "Decodificação por Hardware DESATIVADA para maior compatibilidade.")
 
@@ -142,7 +142,8 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
 
         if(isControlsVisible) scheduleHideControls()
 
-        gestureDetector = GestureDetectorCompat(this, this)
+        // SR_CORRECTION: Usar GestureDetector diretamente
+        gestureDetector = GestureDetector(this, this)
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
 

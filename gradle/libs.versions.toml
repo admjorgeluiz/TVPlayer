@@ -4,7 +4,7 @@
 # SR_NOTE: A versão 8.9.1 do AGP é extremamente recente (ou futura, considerando maio de 2025).
 # Verifique a compatibilidade com sua versão do Android Studio e se é uma versão estável.
 # Normalmente, as versões do AGP são mais alinhadas com algo como 8.3.x, 8.4.x, etc.
-agp = "8.11.0"
+agp = "8.10.1"
 
 # SR_NOTE: Verifique se esta versão do Kotlin é recomendada para o AGP 8.9.1.
 kotlin = "2.0.21"
