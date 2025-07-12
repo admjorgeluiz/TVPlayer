@@ -19,3 +19,23 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# ===============================================
+# == Regras do ProGuard para a biblioteca LibVLC ==
+# ===============================================
+# Mantém todas as classes no pacote principal da LibVLC e as suas subclasses.
+-keep class org.videolan.libvlc.** { *; }
+
+# Mantém as classes da interface nativa (JNI) e os seus membros.
+# Isto é crucial para a comunicação entre o código Kotlin/Java e o código nativo C/C++.
+-keep class org.videolan.vlc.** { *; }
+
+# Mantém os nomes dos métodos nativos para que possam ser encontrados pelo JNI.
+-keepclassmembers class org.videolan.libvlc.** {
+    native <methods>;
+}
+
+# Mantém os construtores de classes que podem ser instanciadas via reflexão.
+-keepclassmembers class org.videolan.vlc.** {
+    <init>(...);
+}
