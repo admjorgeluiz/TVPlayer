@@ -1,33 +1,8 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
-
 # ===============================================
 # == Regras do ProGuard para a biblioteca LibVLC ==
 # ===============================================
 # Mantém todas as classes no pacote principal da LibVLC e as suas subclasses.
 -keep class org.videolan.libvlc.** { *; }
-
-# Mantém as classes da interface nativa (JNI) e os seus membros.
-# Isto é crucial para a comunicação entre o código Kotlin/Java e o código nativo C/C++.
 -keep class org.videolan.vlc.** { *; }
 
 # Mantém os nomes dos métodos nativos para que possam ser encontrados pelo JNI.
@@ -38,4 +13,64 @@
 # Mantém os construtores de classes que podem ser instanciadas via reflexão.
 -keepclassmembers class org.videolan.vlc.** {
     <init>(...);
+}
+
+
+# ===========================================
+# == Regras para a biblioteca Glide (Imagens) ==
+# ===========================================
+# Mantém as classes geradas pelo Glide e as suas anotações.
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep,allowobfuscation public enum com.bumptech.glide.load.ImageHeaderParser$ImageType {
+  **[] $VALUES;
+  public *;
+}
+
+
+# ====================================================================
+# == Regras para a biblioteca Gson (JSON) e as suas Classes de Modelo ==
+# ====================================================================
+# Mantém os nomes dos campos nas suas classes de modelo (data classes)
+# para que o Gson possa mapear o JSON corretamente.
+# Substitua 'com.jorgenascimento.tvplayer.data.model.**' se o seu pacote for diferente.
+-keepclassmembers class com.jorgenascimento.tvplayer.data.model.** {
+  <fields>;
+}
+
+
+# ====================================================
+# == Regras para Classes Parcelable (ex: com @Parcelize) ==
+# ====================================================
+# Mantém a classe e o seu campo estático CREATOR, que é necessário
+# para o Android recriar o objeto.
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+
+# ===============================================================
+# == Regras Adicionais (Geralmente já cobertas, mas boas para garantir) ==
+# ===============================================================
+# Mantém anotações que podem ser usadas em tempo de execução.
+-keepattributes *Annotation*
+
+# Mantém os nomes de classes de Activities, Services, etc., para que o sistema possa encontrá-las.
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.Application
+-keep public class * extends androidx.core.app.CoreComponentFactory
+-keep public class * extends android.app.backup.BackupAgentHelper
+-keep public class * extends android.preference.Preference
+# SR_CORRECTION: A linha abaixo foi removida pois a biblioteca de licenciamento não está a ser usada.
+# -keep public class com.android.vending.licensing.ILicensingService
+
+# Mantém os construtores de Views para que possam ser inflados a partir do XML.
+-keep public class * extends android.view.View {
+    public <init>(android.content.Context);
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+    public void set*(...);
 }
