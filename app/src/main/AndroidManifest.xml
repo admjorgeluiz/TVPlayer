@@ -39,9 +39,9 @@
         <activity
             android:name=".ui.player.PlayerActivity"
             android:exported="false"
+            android:supportsPictureInPicture="true"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
-            android:theme="@style/Theme.AppCompat.NoActionBar" /> <!-- Se você já tem um tema de tela cheia em styles.xml, use-o aqui.
-                 Ex: android:theme="@style/Theme.TVPlayer.FullScreen" -->
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
     </application>
 

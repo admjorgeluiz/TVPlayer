@@ -46,6 +46,20 @@
             android:padding="8dp"/>
 
         <ImageButton
+            android:id="@+id/buttonPip"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/player_pip_description"
+            android:padding="8dp"
+            android:src="@drawable/ic_player_pip"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            app:tint="@android:color/white" />
+
+        <ImageButton
             android:id="@+id/buttonPlayPause"
             android:layout_width="72dp"
             android:layout_height="72dp"

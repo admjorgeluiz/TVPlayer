@@ -88,6 +88,42 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
         hideSystemUI()
     }
 
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        // Verifica se o dispositivo suporta PiP e se o player está tocando
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && mediaPlayer.isPlaying) {
+            enterPiPMode()
+        }
+    }
+
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        if (isInPictureInPictureMode) {
+            // O app entrou no modo PiP: esconda todos os controles
+            binding.playerControlsContainer.visibility = View.GONE
+        } else {
+            // O app saiu do modo PiP: mostre os controles novamente
+            binding.playerControlsContainer.visibility = View.VISIBLE
+        }
+    }
+
+    private fun enterPiPMode() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            val pipParamsBuilder = android.app.PictureInPictureParams.Builder()
+
+            // Tenta obter a faixa de vídeo atual para definir a proporção da janela PiP
+            val videoTrack = mediaPlayer.getCurrentVideoTrack()
+            if (videoTrack != null && videoTrack.width > 0 && videoTrack.height > 0) {
+                val aspectRatio = android.util.Rational(videoTrack.width, videoTrack.height)
+                pipParamsBuilder.setAspectRatio(aspectRatio)
+            }
+
+            // Entra no modo PiP com os parâmetros definidos (ou padrão, se as dimensões não estiverem disponíveis)
+            // A chamada .build() cria um PictureInPictureParams, que é o método moderno e não depreciado.
+            enterPictureInPictureMode(pipParamsBuilder.build())
+        }
+    }
+
     private fun setupPlayer(url: String) {
         Log.d(TAG, "setupPlayer: Configurando player para URL: $url")
         try {
@@ -144,6 +180,12 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
         binding.playerRootLayout.setOnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)
             true
+        }
+
+        binding.buttonPip.setOnClickListener {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                enterPiPMode()
+            }
         }
 
         if(isControlsVisible) scheduleHideControls()
