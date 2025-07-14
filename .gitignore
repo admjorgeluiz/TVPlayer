@@ -13,6 +13,7 @@ captures/ # Capturas de tela do Android Studio
 # Pasta .gradle (cache e histórico do Gradle para este projeto)
 # Esta pasta é gerada pelo Gradle e não deve ser versionada.
 .gradle/
+.kotlin/
 
 # Pastas de Build (saída da compilação)
 # Ignora a pasta 'build' na raiz do projeto e em qualquer submódulo (como 'app/build').
