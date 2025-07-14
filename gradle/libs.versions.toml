@@ -3,20 +3,20 @@
 [versions]
 agp = "8.11.1"
 
-kotlin = "2.0.21"
+kotlin = "2.2.0"
 
 # AndroidX Core & UI
 coreKtx = "1.16.0"          # Consolidado de coreKtxVersion, androidxCoreKtx, coreKtx
 activityKtx = "1.10.1"      # Consolidado de activityVersion, activity (usando -ktx)
-appcompat = "1.7.0"         # Consolidado de appcompatVersion, appcompat
+appcompat = "1.7.1"         # Consolidado de appcompatVersion, appcompat
 constraintlayout = "2.2.1"  # Consolidado de constraintlayoutVersion, constraintlayout
 material = "1.12.0"         # Consolidado de materialVersion, material
 recyclerview = "1.4.0"      # Mantido
 
 # Bibliotecas Terceiras
-libvlc = "3.4.0"            # Consolidado de libvlcAllVersion, libvlcAll
-gson = "2.10.1"             # Mantido
-playServicesAds = "21.1.0"  # SR_NOTE: A versão atual do play-services-ads é ~23.x.x. Considere atualizar para novos recursos e correções.
+libvlc = "3.6.2"            # Consolidado de libvlcAllVersion, libvlcAll
+gson = "2.13.1"             # Mantido
+playServicesAds = "24.4.0"  # SR_NOTE: A versão atual do play-services-ads é ~23.x.x. Considere atualizar para novos recursos e correções.
 
 # Teste
 junit = "4.13.2"            # Mantido (para junit:junit)
