@@ -30,24 +30,21 @@ import java.net.URL
 
 class ChannelListActivity : AppCompatActivity() {
 
-    // SR_CORRECTION: Usando ViewBinding
     private lateinit var binding: ActivityChannelListBinding
-    private lateinit var channelAdapter: ChannelAdapter // SR_CORRECTION: Renomeado de 'adapter'
+    private lateinit var channelAdapter: ChannelAdapter
 
-    // SR_CORRECTION: Lista original para busca, o ListAdapter gerencia a lista exibida
     private var fullChannelList: List<M3UItem> = emptyList()
 
     companion object {
         private const val PREFS_NAME = "tvplayer_prefs"
-        private const val KEY_LIST_URL = "list_url" // SR_NOTE: Esta Activity lê apenas a URL. O nome da lista não é usado aqui.
+        private const val KEY_LIST_URL = "list_url"
         private const val TAG = "ChannelListActivity"
-        private const val CONNECT_TIMEOUT = 15_000 // SR_SUGGESTION: Aumentado
-        private const val READ_TIMEOUT = 15_000    // SR_SUGGESTION: Aumentado
+        private const val CONNECT_TIMEOUT = 15_000
+        private const val READ_TIMEOUT = 15_000
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // SR_CORRECTION: Inflate usando ViewBinding
         binding = ActivityChannelListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -65,12 +62,9 @@ class ChannelListActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        // SR_SUGGESTION: O título da toolbar pode ser definido via XML ou aqui
-        // supportActionBar?.title = getString(R.string.channel_list_title) // Se tiver uma string para isso
     }
 
     private fun setupRecyclerView() {
-        // SR_CORRECTION: Instanciação do ChannelAdapter (agora ListAdapter)
         channelAdapter = ChannelAdapter { m3uItem ->
             // O clique no item está correto, item.url deve ser acessível
             val intent = Intent(this, PlayerActivity::class.java).apply {
@@ -107,10 +101,9 @@ class ChannelListActivity : AppCompatActivity() {
             loadFromSource(savedUrl)
         } else {
             Toast.makeText(this, getString(R.string.nenhuma_lista_selecionada), Toast.LENGTH_LONG).show()
-            // SR_SUGGESTION: Limpar a lista no adapter se não houver URL
             channelAdapter.submitList(emptyList())
             fullChannelList = emptyList()
-            finish() // Continua finalizando se não houver URL
+            finish()
         }
     }
 
@@ -179,13 +172,13 @@ class ChannelListActivity : AppCompatActivity() {
             connection.disconnect()
             throw IOException("Erro de conexão HTTP: $responseCode. $errorStreamMessage")
         }
-        // SR_NOTE: A lógica de fallback HTTP->HTTPS foi removida para consistência com a MainActivity revisada.
+        // A lógica de fallback HTTP->HTTPS foi removida para consistência com a MainActivity revisada.
         // Se for estritamente necessário, pode ser readicionada aqui, mas geralmente é melhor
         // que os servidores HTTPS funcionem corretamente.
     }
 
     override fun onDestroy() {
-        binding.adViewChannelList.destroy() // SR_CORRECTION: Usar binding
+        binding.adViewChannelList.destroy()
         super.onDestroy()
     }
 }

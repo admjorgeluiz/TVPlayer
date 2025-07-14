@@ -19,4 +19,5 @@
         android:autofillHints="url" android:hint="@string/hint_url_da_lista_m3u"
         android:inputType="textUri"
         android:maxLines="1"
-        android:layout_marginTop="12dp" /> </LinearLayout>
+        android:layout_marginTop="12dp" />
+</LinearLayout>

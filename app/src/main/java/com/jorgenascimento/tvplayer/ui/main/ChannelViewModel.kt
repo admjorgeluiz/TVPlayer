@@ -1,4 +1,4 @@
-package com.jorgenascimento.tvplayer.ui.main // Ou um novo pacote como .ui.viewmodel
+package com.jorgenascimento.tvplayer.ui.main
 
 import android.app.Application
 import android.content.Context

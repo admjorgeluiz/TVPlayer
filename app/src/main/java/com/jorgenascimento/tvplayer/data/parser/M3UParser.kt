@@ -6,8 +6,6 @@ import java.io.StringReader
 
 object M3UParser {
 
-    // Função auxiliar para extrair um atributo específico da linha #EXTINF
-    // Ex: extractAttribute(line, "tvg-logo")
     private fun extractAttribute(extInfLine: String, attributeName: String): String? {
         // Procura por attributeName="valor_aqui"
         val regex = """${Regex.escape(attributeName)}="([^"]*)"""".toRegex()
