@@ -2,35 +2,31 @@
 
 [versions]
 agp = "8.11.1"
-
 kotlin = "2.2.0"
 
 # AndroidX Core & UI
-coreKtx = "1.16.0"          # Consolidado de coreKtxVersion, androidxCoreKtx, coreKtx
-activityKtx = "1.10.1"      # Consolidado de activityVersion, activity (usando -ktx)
-appcompat = "1.7.1"         # Consolidado de appcompatVersion, appcompat
-constraintlayout = "2.2.1"  # Consolidado de constraintlayoutVersion, constraintlayout
-material = "1.12.0"         # Consolidado de materialVersion, material
-recyclerview = "1.4.0"      # Mantido
+coreKtx = "1.16.0"
+activityKtx = "1.10.1"
+appcompat = "1.7.1"
+constraintlayout = "2.2.1"
+material = "1.12.0"
+recyclerview = "1.4.0"
 
 # Bibliotecas Terceiras
-libvlc = "3.6.2"            # Consolidado de libvlcAllVersion, libvlcAll
-gson = "2.13.1"             # Mantido
-playServicesAds = "24.4.0"  # SR_NOTE: A versão atual do play-services-ads é ~23.x.x. Considere atualizar para novos recursos e correções.
+libvlc = "3.6.2"
+gson = "2.13.1"
+playServicesAds = "24.5.0"
+glide = "4.16.0"
+
+# Firebase
+firebaseBom = "34.0.0"
+firebaseAnalytics = "22.5.0"
+googleServicesPlugin = "4.4.3"
 
 # Teste
-junit = "4.13.2"            # Mantido (para junit:junit)
-androidxJunitExt = "1.2.1"  # Consolidado de androidxJunit, junitVersion (para androidx.test.ext:junit)
-espressoCore = "3.6.1"      # Consolidado de espressoCoreVersion, espressoCore
-
-# Glide (Nova adição)
-glide = "4.16.0"            # Versão estável popular do Glide
-
-# SR_NOTE: As versões para Exoplayer (antigo) e Media3 foram mantidas abaixo caso você planeje usá-las.
-# Lembre-se que Media3 é o sucessor recomendado para o ExoPlayer.
-# Se não for usar, pode remover estas linhas de versão para manter o arquivo mais limpo.
-exoplayerLegacy = "2.19.1"  # Renomeado para clareza (era 'exoplayer')
-media3 = "1.6.0"
+junit = "4.13.2"
+androidxJunitExt = "1.3.0"
+espressoCore = "3.7.0"
 
 [libraries]
 # Kotlin
@@ -39,9 +35,9 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "
 # AndroidX Core & UI
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" } # SR_NOTE: Usando -ktx. Se precisar da não-ktx: "androidx.activity:activity"
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
-google-material = { module = "com.google.android.material:material", version.ref = "material" } # Nome mais padronizado
+google-material = { module = "com.google.android.material:material", version.ref = "material" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 
 # LibVLC
@@ -53,27 +49,20 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 # Google Play Services Ads
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 
-# Glide (Nova adição)
+# Glide
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
-# SR_NOTE: Adicione o processador de anotações do Glide se você usar @GlideModule ou outras funcionalidades avançadas.
-# Necessitará do plugin 'kotlin-kapt'.
-# glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
+
+# Firebase
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalytics" }
 
 # Teste
 junit = { module = "junit:junit", version.ref = "junit" }
-androidx-junit-ext = { module = "androidx.test.ext:junit", version.ref = "androidxJunitExt" } # Alias consolidado
-androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" } # Alias consolidado
-
-# SR_NOTE: As bibliotecas Exoplayer (antigo) e Media3 estão comentadas abaixo.
-# Descomente se você decidir usá-las em seu build.gradle.
-# exoplayer-legacy = { module = "com.google.android.exoplayer:exoplayer", version.ref = "exoplayerLegacy" }
-# androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
-# androidx-media3-hls = { module = "androidx.media3:media3-hls", version.ref = "media3" }
-# androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
-
+androidx-junit-ext = { module = "androidx.test.ext:junit", version.ref = "androidxJunitExt" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-# SR_NOTE: Se for usar o glide-compiler, adicione o plugin kotlin-kapt aqui
-# kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServicesPlugin" }
+

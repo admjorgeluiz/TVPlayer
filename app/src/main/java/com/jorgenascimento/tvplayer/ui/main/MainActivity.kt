@@ -18,13 +18,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.jorgenascimento.tvplayer.R
 import com.jorgenascimento.tvplayer.data.model.M3UItem
-// M3UParser não é mais usado diretamente aqui, mas sim no ViewModel
 import com.jorgenascimento.tvplayer.databinding.ActivityMainBinding
 import com.jorgenascimento.tvplayer.databinding.DialogInputUrlBinding
 import com.jorgenascimento.tvplayer.ui.player.PlayerActivity
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
-// kotlinx.coroutines não são mais usados diretamente aqui para carregar a lista
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 // Definições de Categoria (podem ficar fora da classe se preferir, ou no ViewModel)
 enum class ChannelCategory {
@@ -81,9 +82,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         MobileAds.initialize(this) {}
         binding.adViewMain.loadAd(AdRequest.Builder().build())
