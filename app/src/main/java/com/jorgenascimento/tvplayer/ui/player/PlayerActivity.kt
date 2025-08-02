@@ -1,10 +1,11 @@
 package com.jorgenascimento.tvplayer.ui.player
 
 import android.annotation.SuppressLint
+import android.app.PictureInPictureParams
 import android.content.Context
 import android.content.res.Configuration
 import android.media.AudioManager
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,10 +14,10 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.jorgenascimento.tvplayer.R
 import com.jorgenascimento.tvplayer.databinding.ActivityPlayerBinding
 import org.videolan.libvlc.LibVLC
@@ -24,7 +25,6 @@ import org.videolan.libvlc.Media
 import org.videolan.libvlc.MediaPlayer
 import java.util.Formatter
 import java.util.Locale
-import kotlin.math.abs
 
 class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.OnSeekBarChangeListener, GestureDetector.OnGestureListener {
 
@@ -52,7 +52,6 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     companion object {
         private const val TAG = "PlayerActivity"
         private const val GESTURE_TAG = "PlayerGesture"
-        private const val VLC_TAG = "VLC_DEBUG" // Tag para logs do VLC
         private const val DEFAULT_NETWORK_CACHING = 1500
         private const val POSITION_UPDATE_INTERVAL_MS = 500L
     }
@@ -88,10 +87,12 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
         hideSystemUI()
     }
 
+    // --- Início das Alterações para Picture-in-Picture ---
+
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         // Verifica se o dispositivo suporta PiP e se o player está tocando
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && mediaPlayer.isPlaying) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && mediaPlayer.isPlaying) {
             enterPiPMode()
         }
     }
@@ -108,8 +109,8 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     }
 
     private fun enterPiPMode() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            val pipParamsBuilder = android.app.PictureInPictureParams.Builder()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val pipParamsBuilder = PictureInPictureParams.Builder()
 
             // Tenta obter a faixa de vídeo atual para definir a proporção da janela PiP
             val videoTrack = mediaPlayer.getCurrentVideoTrack()
@@ -119,10 +120,28 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
             }
 
             // Entra no modo PiP com os parâmetros definidos (ou padrão, se as dimensões não estiverem disponíveis)
-            // A chamada .build() cria um PictureInPictureParams, que é o método moderno e não depreciado.
             enterPictureInPictureMode(pipParamsBuilder.build())
         }
     }
+
+    override fun onPause() {
+        super.onPause()
+        // CORREÇÃO: Não pausar o vídeo se o app estiver entrando em modo PiP.
+        // O sistema Android gere o estado de reprodução na janela PiP.
+        if (isInPictureInPictureMode) {
+            // Não faz nada, deixa o vídeo a tocar em PiP.
+        } else {
+            // Pausa o vídeo se o app for para o fundo por outro motivo (ex: chamada telefónica).
+            if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
+                mediaPlayer.pause()
+                Log.d(TAG, "Player pausado em onPause() porque não está em modo PiP")
+            }
+        }
+        handler.removeCallbacks(updateProgressRunnable)
+        handler.removeCallbacks(hideControlsRunnable)
+    }
+
+    // --- Fim das Alterações para Picture-in-Picture ---
 
     private fun setupPlayer(url: String) {
         Log.d(TAG, "setupPlayer: Configurando player para URL: $url")
@@ -130,26 +149,20 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
             val options = arrayListOf(
                 "--network-caching=$DEFAULT_NETWORK_CACHING",
                 "--no-sub-autodetect-file",
-                "--vout=gles2", // Força o uso do OpenGL ES2 para renderização de vídeo
-                "-vvv" // Nível de log muito verboso
+                "--vout=gles2",
+                "-vvv"
             )
             libVLC = LibVLC(this, options)
             mediaPlayer = MediaPlayer(libVLC)
             mediaPlayer.attachViews(binding.videoLayout, null, false, false)
             mediaPlayer.setEventListener(this)
-            Log.d(TAG, "LibVLC e MediaPlayer inicializados com opções de compatibilidade.")
+            Log.d(TAG, "LibVLC e MediaPlayer inicializados.")
 
-            val uri = Uri.parse(url)
-            val media = Media(libVLC, uri)
-
-            media.setHWDecoderEnabled(false, false) // Mantém a decodificação por software
-            Log.i(TAG, "Decodificação por Hardware DESATIVADA para maior compatibilidade.")
-
+            val media = Media(libVLC, url.toUri())
+            media.setHWDecoderEnabled(false, false)
             media.addOption(":http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
-
             mediaPlayer.media = media
             media.release()
-            Log.d(TAG, "Mídia definida no MediaPlayer. A iniciar play().")
             mediaPlayer.play()
         } catch (e: Exception) {
             Log.e(TAG, "Exceção em setupPlayer ao tentar reproduzir: $url", e)
@@ -162,17 +175,11 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     private fun setupControlsAndGestures() {
         Log.d(TAG, "setupControlsAndGestures: Configurando controlos e gestos.")
         binding.buttonBack.setOnClickListener {
-            Log.d(TAG, "Botão Voltar clicado.")
             onBackPressedDispatcher.onBackPressed()
             resetControlsTimeout()
         }
         binding.buttonPlayPause.setOnClickListener {
-            Log.d(TAG, "Botão Play/Pause clicado. IsPlaying: ${mediaPlayer.isPlaying}")
-            if (mediaPlayer.isPlaying) {
-                mediaPlayer.pause()
-            } else {
-                mediaPlayer.play()
-            }
+            if (mediaPlayer.isPlaying) mediaPlayer.pause() else mediaPlayer.play()
             resetControlsTimeout()
         }
         binding.seekBarProgress.setOnSeekBarChangeListener(this)
@@ -182,8 +189,9 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
             true
         }
 
+        // Configura o clique para o botão de PiP
         binding.buttonPip.setOnClickListener {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 enterPiPMode()
             }
         }
@@ -203,18 +211,10 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
         screenWidth = binding.playerRootLayout.width
         screenHeight = binding.playerRootLayout.height
         Log.d(GESTURE_TAG, "Screen dimensions atualizadas: width=$screenWidth, height=$screenHeight")
-        if (screenWidth == 0 || screenHeight == 0) {
-            Log.w(GESTURE_TAG, "AVISO: Dimensões da tela são zero após a atualização!")
-        }
     }
 
     private fun toggleControlsVisibility() {
-        if (isControlsVisible) {
-            hideControls()
-        } else {
-            showControls()
-            scheduleHideControls()
-        }
+        if (isControlsVisible) hideControls() else showControls()
     }
 
     private fun showControls() {
@@ -222,6 +222,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
             binding.playerControlsContainer.visibility = View.VISIBLE
         }.start()
         isControlsVisible = true
+        scheduleHideControls()
     }
 
     private fun hideControls() {
@@ -237,8 +238,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
     }
 
     private fun resetControlsTimeout() {
-        if (!isControlsVisible) showControls()
-        scheduleHideControls()
+        if (!isControlsVisible) showControls() else scheduleHideControls()
     }
 
     private val updateProgressRunnable: Runnable = object : Runnable {
@@ -259,7 +259,6 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
 
     private fun formatTime(timeMs: Long): String {
         if (timeMs < 0) return "--:--"
-        if (timeMs == 0L) return "00:00"
         val totalSeconds = timeMs / 1000
         val seconds = totalSeconds % 60
         val minutes = totalSeconds / 60 % 60
@@ -274,157 +273,93 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
 
     @SuppressLint("SwitchIntDef")
     override fun onEvent(event: MediaPlayer.Event) {
-        if (!isFinishing && !isDestroyed) {
-            runOnUiThread {
-                when (event.type) {
-                    MediaPlayer.Event.Playing -> {
-                        Log.d(TAG, "MediaPlayer Event: Playing")
-                        binding.playerBuffering.visibility = View.GONE
-                        binding.buttonPlayPause.setImageResource(R.drawable.ic_player_pause)
-                        handler.removeCallbacks(updateProgressRunnable)
-                        handler.post(updateProgressRunnable)
-                        val length = mediaPlayer.length
-                        binding.textTotalTime.text = formatTime(length)
-                        binding.seekBarProgress.max = if (length > 0) length.toInt() else 1000
-                    }
-                    MediaPlayer.Event.Paused -> {
-                        Log.d(TAG, "MediaPlayer Event: Paused")
-                        binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
-                        handler.removeCallbacks(updateProgressRunnable)
-                    }
-                    MediaPlayer.Event.Stopped, MediaPlayer.Event.EndReached -> {
-                        Log.d(TAG, "MediaPlayer Event: Stopped or EndReached (type=${event.type})")
-                        binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
-                        handler.removeCallbacks(updateProgressRunnable)
-                        binding.seekBarProgress.progress = if (event.type == MediaPlayer.Event.EndReached) binding.seekBarProgress.max else 0
-                        binding.textCurrentTime.text = if (event.type == MediaPlayer.Event.EndReached) binding.textTotalTime.text else formatTime(0)
-                    }
-                    MediaPlayer.Event.EncounteredError -> {
-                        Log.e(TAG, "MediaPlayer Event: EncounteredError")
-                        Toast.makeText(this, getString(R.string.toast_erro_reproducao), Toast.LENGTH_LONG).show()
-                        binding.playerBuffering.visibility = View.GONE
-                    }
-                    MediaPlayer.Event.Buffering -> {
-                        Log.d(TAG, "MediaPlayer Event: Buffering ${event.buffering}%")
-                        if (event.buffering >= 100f || !mediaPlayer.isPlaying) {
-                            binding.playerBuffering.visibility = View.GONE
-                        } else {
-                            binding.playerBuffering.visibility = View.VISIBLE
-                        }
-                    }
-                    MediaPlayer.Event.LengthChanged -> {
-                        val newLength = event.lengthChanged
-                        Log.d(TAG, "MediaPlayer Event: LengthChanged $newLength")
-                        binding.textTotalTime.text = formatTime(newLength)
-                        binding.seekBarProgress.max = if (newLength > 0) newLength.toInt() else 1000
-                    }
-                    MediaPlayer.Event.TimeChanged -> { /* O updateProgressRunnable já lida com isso */ }
+        if (isFinishing || isDestroyed) return
+        runOnUiThread {
+            when (event.type) {
+                MediaPlayer.Event.Playing -> {
+                    binding.playerBuffering.visibility = View.GONE
+                    binding.buttonPlayPause.setImageResource(R.drawable.ic_player_pause)
+                    handler.post(updateProgressRunnable)
+                    val length = mediaPlayer.length
+                    binding.textTotalTime.text = formatTime(length)
+                    binding.seekBarProgress.max = if (length > 0) length.toInt() else 1000
+                }
+                MediaPlayer.Event.Paused -> {
+                    binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
+                    handler.removeCallbacks(updateProgressRunnable)
+                }
+                MediaPlayer.Event.Stopped, MediaPlayer.Event.EndReached -> {
+                    binding.buttonPlayPause.setImageResource(R.drawable.ic_player_play)
+                    handler.removeCallbacks(updateProgressRunnable)
+                    binding.seekBarProgress.progress = if (event.type == MediaPlayer.Event.EndReached) binding.seekBarProgress.max else 0
+                    binding.textCurrentTime.text = formatTime(if (event.type == MediaPlayer.Event.EndReached) mediaPlayer.length else 0)
+                }
+                MediaPlayer.Event.EncounteredError -> {
+                    Toast.makeText(this, getString(R.string.toast_erro_reproducao), Toast.LENGTH_LONG).show()
+                    binding.playerBuffering.visibility = View.GONE
+                }
+                MediaPlayer.Event.Buffering -> {
+                    binding.playerBuffering.visibility = if (event.buffering < 100f) View.VISIBLE else View.GONE
+                }
+                MediaPlayer.Event.LengthChanged -> {
+                    val newLength = event.lengthChanged
+                    binding.textTotalTime.text = formatTime(newLength)
+                    binding.seekBarProgress.max = if (newLength > 0) newLength.toInt() else 1000
                 }
             }
         }
     }
 
-    // Implementação de GestureDetector.OnGestureListener
     override fun onDown(e: MotionEvent): Boolean {
-        if (screenHeight == 0 || screenWidth == 0) {
-            updateScreenDimensions()
-            if (screenHeight == 0 || screenWidth == 0) {
-                Log.e(GESTURE_TAG, "onDown: FALHA ao obter dimensões da tela. Gesto não será processado.")
-                return false
-            }
-        }
+        if (screenHeight == 0 || screenWidth == 0) updateScreenDimensions()
         volumeAtGestureStart = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-        brightnessAtGestureStart = window.attributes.screenBrightness
-        if (brightnessAtGestureStart < 0) {
-            try {
-                brightnessAtGestureStart = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS) / 255f
-            } catch (ex: Exception) {
-                Log.w(GESTURE_TAG, "onDown: Não foi possível obter o brilho do sistema.", ex)
-                brightnessAtGestureStart = 0.5f
-            }
-        }
-        Log.d(GESTURE_TAG, "onDown: x=${e.x.toInt()}, y=${e.y.toInt()}. Vol inicial: $volumeAtGestureStart, Brilho inicial: $brightnessAtGestureStart")
+        brightnessAtGestureStart = window.attributes.screenBrightness.takeIf { it >= 0 } ?: (Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS) / 255f)
 
-        val oneQuarterScreenWidth = screenWidth / 4
-        val threeQuartersScreenWidth = screenWidth * 3 / 4
-
-        if (e.x < oneQuarterScreenWidth) {
-            gestureControlMode = GestureControlMode.BRIGHTNESS
-            Log.d(GESTURE_TAG, "Modo Gesto: BRILHO (x=${e.x.toInt()} < $oneQuarterScreenWidth)")
-        } else if (e.x > threeQuartersScreenWidth) {
-            gestureControlMode = GestureControlMode.VOLUME
-            Log.d(GESTURE_TAG, "Modo Gesto: VOLUME (x=${e.x.toInt()} > $threeQuartersScreenWidth)")
-        } else {
-            gestureControlMode = GestureControlMode.NONE
-            Log.d(GESTURE_TAG, "Modo Gesto: NENHUM (zona morta central, x=${e.x.toInt()})")
+        gestureControlMode = when {
+            e.x < screenWidth / 4 -> GestureControlMode.BRIGHTNESS
+            e.x > screenWidth * 3 / 4 -> GestureControlMode.VOLUME
+            else -> GestureControlMode.NONE
         }
         return true
     }
 
-    override fun onShowPress(e: MotionEvent) { Log.d(GESTURE_TAG, "onShowPress") }
+    override fun onShowPress(e: MotionEvent) {}
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
-        Log.d(GESTURE_TAG, "onSingleTapUp: Alternando visibilidade dos controlos.")
         toggleControlsVisibility()
         return true
     }
 
-    override fun onScroll(
-        e1: MotionEvent?,
-        e2: MotionEvent,
-        distanceX: Float,
-        distanceY: Float
-    ): Boolean {
-        if (e1 == null || gestureControlMode == GestureControlMode.NONE || screenHeight == 0) {
-            return false
-        }
+    override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+        if (e1 == null || gestureControlMode == GestureControlMode.NONE || screenHeight == 0) return false
 
-        val deltaYTotal = e1.y - e2.y
-        val scrollPercentageOfScreen = deltaYTotal / screenHeight.toFloat()
+        val deltaY = e1.y - e2.y
+        val scrollPercent = deltaY / screenHeight
 
         when (gestureControlMode) {
             GestureControlMode.BRIGHTNESS -> {
-                val brightnessChangeFactor = 1.2f
-                var newBrightness = brightnessAtGestureStart + (scrollPercentageOfScreen * brightnessChangeFactor)
-                newBrightness = newBrightness.coerceIn(0.05f, 1.0f)
-
-                val layoutParams = window.attributes
-                if (abs(layoutParams.screenBrightness - newBrightness) > 0.01f) {
-                    layoutParams.screenBrightness = newBrightness
-                    window.attributes = layoutParams
-                    Log.i(GESTURE_TAG, "Brilho ajustado para: $newBrightness")
-                }
+                val newBrightness = (brightnessAtGestureStart + scrollPercent * 1.2f).coerceIn(0.05f, 1.0f)
+                window.attributes = window.attributes.apply { screenBrightness = newBrightness }
             }
             GestureControlMode.VOLUME -> {
-                val volumeChangeFactor = 1.5f
-                val deltaVolume = (scrollPercentageOfScreen * maxVolume * volumeChangeFactor).toInt()
-                var newVolume = volumeAtGestureStart + deltaVolume
-                newVolume = newVolume.coerceIn(0, maxVolume)
-
-                if (audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) != newVolume) {
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0)
-                    Log.i(GESTURE_TAG, "Volume ajustado para: $newVolume")
-                }
+                val deltaVolume = (scrollPercent * maxVolume * 1.5f).toInt()
+                val newVolume = (volumeAtGestureStart + deltaVolume).coerceIn(0, maxVolume)
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0)
             }
-            GestureControlMode.NONE -> return false
+            GestureControlMode.NONE -> {}
         }
         resetControlsTimeout()
         return true
     }
 
-    override fun onLongPress(e: MotionEvent) { Log.d(GESTURE_TAG, "onLongPress") }
-    override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-        Log.d(GESTURE_TAG, "onFling: vX=$velocityX, vY=$velocityY")
-        return false
-    }
+    override fun onLongPress(e: MotionEvent) {}
+    override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean = false
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         if (fromUser && ::mediaPlayer.isInitialized && mediaPlayer.isSeekable) {
             val newPosition = progress.toFloat() / (seekBar?.max?.takeIf { it > 0 }?.toFloat() ?: 1000f)
-            if (newPosition in 0f..1f) {
-                mediaPlayer.position = newPosition
-                binding.textCurrentTime.text = formatTime((newPosition * mediaPlayer.length).toLong())
-            }
+            mediaPlayer.position = newPosition
+            binding.textCurrentTime.text = formatTime((newPosition * mediaPlayer.length).toLong())
             resetControlsTimeout()
         }
     }
@@ -438,7 +373,6 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
         if (::mediaPlayer.isInitialized) {
-            if (mediaPlayer.isSeekable) { }
             handler.post(updateProgressRunnable)
             scheduleHideControls()
         }
@@ -446,46 +380,27 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) {
-            hideSystemUI()
-        }
+        if (hasFocus) hideSystemUI()
     }
 
     private fun hideSystemUI() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            window.insetsController?.let {
-                it.hide(android.view.WindowInsets.Type.statusBars() or android.view.WindowInsets.Type.navigationBars())
-                it.systemBarsBehavior = android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(android.view.WindowInsets.Type.systemBars())
         } else {
             @Suppress("DEPRECATION")
-            window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            or View.SYSTEM_UI_FLAG_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    )
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
-            mediaPlayer.pause()
-            Log.d(TAG, "Player pausado em onPause()")
-        }
-        handler.removeCallbacks(updateProgressRunnable)
-        handler.removeCallbacks(hideControlsRunnable)
     }
 
     override fun onResume() {
         super.onResume()
         hideSystemUI()
         if (::mediaPlayer.isInitialized && !mediaPlayer.isPlaying) {
-            mediaPlayer.play()
-            Log.d(TAG, "Player retomado em onResume()")
+            // Apenas retoma se não estivermos em modo PiP. Se estivermos, o sistema gere.
+            if (!isInPictureInPictureMode) {
+                mediaPlayer.play()
+                Log.d(TAG, "Player retomado em onResume()")
+            }
         }
         if (isControlsVisible) {
             scheduleHideControls()
@@ -494,18 +409,14 @@ class PlayerActivity : AppCompatActivity(), MediaPlayer.EventListener, SeekBar.O
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy chamado para PlayerActivity")
-        handler.removeCallbacks(updateProgressRunnable)
-        handler.removeCallbacks(hideControlsRunnable)
+        handler.removeCallbacksAndMessages(null)
         if (::mediaPlayer.isInitialized) {
-            Log.d(TAG, "Liberando MediaPlayer")
             mediaPlayer.stop()
             mediaPlayer.detachViews()
             mediaPlayer.setEventListener(null)
             mediaPlayer.release()
         }
         if (::libVLC.isInitialized) {
-            Log.d(TAG, "Liberando LibVLC")
             libVLC.release()
         }
     }
