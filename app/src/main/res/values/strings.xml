@@ -51,5 +51,6 @@
     <string name="player_play_pause_description">Reproduzir ou Pausar</string>
     <string name="player_back_description">Voltar à lista de canais</string>
     <string name="player_pip_description" />
+    <string name="player_rotate_description">player rotate</string>
 
 </resources>

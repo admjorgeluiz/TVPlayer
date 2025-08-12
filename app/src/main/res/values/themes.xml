@@ -6,4 +6,9 @@
     </style>
 
     <style name="Theme.TVPlayer" parent="Base.Theme.TVPlayer" />
+
+    <style name="CustomMediaRouteButtonStyle" parent="Widget.MediaRouter.MediaRouteButton">
+        <item name="mediaRouteButtonTint">@android:color/white</item>
+    </style>
+
 </resources>

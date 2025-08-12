@@ -28,23 +28,37 @@
         android:id="@+id/playerControlsContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#66000000" android:visibility="visible"
+        android:background="#66000000"
+        android:visibility="visible"
         tools:visibility="visible">
 
+        <!-- Botão Voltar -->
         <ImageButton
             android:id="@+id/buttonBack"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/player_back_description"
+            android:padding="8dp"
             android:src="@drawable/ic_player_back"
-            app:tint="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:padding="8dp"/>
+            app:tint="@android:color/white" />
 
+        <!-- Botão de Casting (Chromecast) -->
+        <androidx.mediarouter.app.MediaRouteButton
+            android:id="@+id/mediaRouteButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buttonPip"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            style="@style/CustomMediaRouteButtonStyle" />
+
+        <!-- Botão Picture-in-Picture -->
         <ImageButton
             android:id="@+id/buttonPip"
             android:layout_width="48dp"
@@ -59,6 +73,7 @@
             android:layout_marginTop="16dp"
             app:tint="@android:color/white" />
 
+        <!-- Botão Play/Pause -->
         <ImageButton
             android:id="@+id/buttonPlayPause"
             android:layout_width="72dp"
@@ -66,22 +81,24 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/player_play_pause_description"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_player_play" app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_player_play"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@android:color/white" />
 
+        <!-- Controles Inferiores -->
         <LinearLayout
             android:id="@+id/bottomControls"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp"
-            android:gravity="center_vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/textCurrentTime"
@@ -95,12 +112,12 @@
                 android:id="@+id/seekBarProgress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:layout_weight="1"
                 android:progressTint="@android:color/white"
-                android:thumbTint="@android:color/white"
-                android:secondaryProgressTint="@android:color/darker_gray"/>
+                android:secondaryProgressTint="@android:color/darker_gray"
+                android:thumbTint="@android:color/white" />
 
             <TextView
                 android:id="@+id/textTotalTime"
@@ -109,6 +126,18 @@
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 tools:text="00:00" />
+
+            <!-- Botão de Rotação de Tela -->
+            <ImageButton
+                android:id="@+id/buttonRotate"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_player_rotate"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/player_rotate_description"
+                android:padding="8dp"
+                android:layout_marginStart="8dp"
+                app:tint="@android:color/white" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
