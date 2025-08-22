@@ -135,11 +135,11 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     if (channelViewModel.fullChannelList.isEmpty() && state.sourceIdentifier.startsWith("http")) {
-                        Toast.makeText(this, "Lista '${state.listName}' carregada, mas nenhum canal válido foi encontrado ou o formato é inválido.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, getString(R.string.list_loaded_invalid, state.listName), Toast.LENGTH_LONG).show()
                     } else if (channelViewModel.fullChannelList.isEmpty()) {
-                        Toast.makeText(this, "Lista '${state.listName}' carregada está vazia.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.list_loaded_empty, state.listName), Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this, "Lista '${state.listName}' carregada com ${channelViewModel.fullChannelList.size} canais.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.list_loaded_success, state.listName, channelViewModel.fullChannelList.size), Toast.LENGTH_SHORT).show()
                     }
                 }
                 is ListLoadingState.Error -> {
