@@ -18,6 +18,10 @@
     <string name="toast_lista_carregada_sucesso">Lista carregada com sucesso.</string>
     <string name="fab_content_description_load_m3u">Carregar nova lista M3U</string>
 
+    <string name="list_loaded_empty">Lista \'%1$s\' carregada está vazia.</string>
+    <string name="list_loaded_invalid">Lista \'%1$s\' carregada, mas nenhum canal válido foi encontrado ou o formato é inválido.</string>
+    <string name="list_loaded_success">Lista \'%1$s\' carregada com %2$d canais.</string>
+
     <string name="channel_logo_content_description">Logo do canal</string>
     <string name="channel_name_placeholder">Nome do Canal</string> <string name="toast_url_canal_nao_encontrada">URL do canal não encontrada.</string>
     <string name="toast_erro_reproducao">Erro durante a reprodução.</string>
