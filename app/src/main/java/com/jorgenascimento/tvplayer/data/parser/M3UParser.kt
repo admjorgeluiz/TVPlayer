@@ -13,9 +13,6 @@ object M3UParser {
         return matchResult?.groups?.get(1)?.value?.trim()?.ifEmpty { null }
     }
 
-    /**
-     * Faz o parse do conteúdo de um arquivo M3U usando um BufferedReader.
-     */
     fun parseStream(reader: BufferedReader): List<M3UItem> {
         val channels = mutableListOf<M3UItem>()
 
@@ -28,7 +25,6 @@ object M3UParser {
             val trimmedLine = line.trim()
             when {
                 trimmedLine.startsWith("#EXTM3U") -> {
-                    // Cabeçalho M3U, pode ser ignorado para extração de canais ou usado para validação
                 }
                 trimmedLine.startsWith("#EXTINF:") -> {
                     currentExtInfLine = trimmedLine // Salva a linha para extrair atributos
@@ -75,9 +71,6 @@ object M3UParser {
         return channels
     }
 
-    /**
-     * Faz o parse do conteúdo de uma string M3U.
-     */
     fun parse(content: String): List<M3UItem> {
         val reader = StringReader(content).buffered()
         return parseStream(reader)

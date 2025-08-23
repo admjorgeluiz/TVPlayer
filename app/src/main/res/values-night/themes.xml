@@ -1,7 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.TVPlayer" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <!-- Tema Base da Aplicação (Tema Escuro) -->
+    <style name="Theme.TVPlayer" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Cores Primárias -->
+        <item name="colorPrimary">@color/blue_400</item>
+        <item name="colorPrimaryVariant">@color/blue_400</item>
+        <item name="colorOnPrimary">@color/black</item>
+
+        <!-- Cores Secundárias -->
+        <item name="colorSecondary">@color/teal_300</item>
+        <item name="colorSecondaryVariant">@color/teal_300</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <!-- Cor da Barra de Status -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+
+        <!-- Cores de Fundo e Superfície -->
+        <item name="android:windowBackground">@color/dark_background</item>
+        <item name="colorSurface">@color/dark_surface</item>
+        <item name="colorOnSurface">@color/text_light</item>
+    </style>
+
+    <!-- Estilo para o botão de Cast (Versão Escura) -->
+    <style name="CustomMediaRouteButtonStyle" parent="Widget.MediaRouter.MediaRouteButton">
+        <item name="mediaRouteButtonTint">@android:color/white</item>
     </style>
 </resources>

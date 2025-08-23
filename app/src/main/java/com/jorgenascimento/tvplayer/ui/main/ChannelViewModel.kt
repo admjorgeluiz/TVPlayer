@@ -1,5 +1,6 @@
 package com.jorgenascimento.tvplayer.ui.main
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.net.Uri
@@ -44,13 +45,7 @@ class ChannelViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun loadM3UFromSourceIfNotLoaded(sourceUrlOrUri: String, listName: String, context: Context) {
-        // Só carrega se a lista estiver vazia ou se a fonte for diferente (lógica de "diferente" pode ser mais complexa)
-        // Para simplificar, vamos recarregar se chamado, mas idealmente você teria uma lógica para evitar recargas desnecessárias.
-        // Ou, se a fullChannelList já estiver populada, pode emitir o estado de Success imediatamente.
         if (fullChannelList.isNotEmpty() && _channelListState.value is ListLoadingState.Success) {
-            // Se já temos uma lista e o estado é de sucesso, podemos re-emitir para garantir que a UI atualize
-            // ou apenas confiar que a Activity já tem os dados.
-            // Para este exemplo, vamos permitir recarregar se a função for chamada.
             Log.d(TAG, "loadM3UFromSourceIfNotLoaded: Lista já carregada, mas permitindo recarga.")
         }
 
@@ -79,6 +74,7 @@ class ChannelViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    @SuppressLint("UseKtx")
     @Throws(IOException::class, SocketTimeoutException::class)
     private fun openStreamReader(source: String, context: Context): BufferedReader {
         return if (source.startsWith("content:")) {

@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Cores Base -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="colorPrimary">#FF6200EE</color> <color name="fab_icon_tint">@color/white</color>
-    <color name="toolbar_background">@color/colorPrimary</color> </resources>
+
+    <!-- Paleta de Cores -->
+    <color name="blue_500">#FF3774AD</color>
+    <color name="blue_400">#FF5F9ED9</color>
+    <color name="teal_300">#FF00BCD4</color>
+
+    <color name="dark_background">#FF121212</color>
+    <color name="dark_surface">#FF1E1E1E</color>
+
+    <color name="light_background">#FFF8F9FA</color>
+    <color name="light_surface">#FFFFFFFF</color>
+
+    <color name="text_light">#E0E0E0</color>
+    <color name="text_dark">#FF212121</color>
+    <color name="fab_icon_tint">#FFFFFFFF</color>
+</resources>

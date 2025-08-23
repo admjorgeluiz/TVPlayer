@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">TVPlayer</string>
+
+    <string name="nenhuma_lista_selecionada">No M3U list loaded.</string>
+    <string name="buscar_canal">Search channel…</string>
+    <string name="info_lista_carregada">List: %1$s\nURL/Source: %2$s</string>
+    <string name="dialog_title_carregar_lista">Load M3U List</string>
+    <string name="dialog_message_escolha_opcao">Choose an option to load the list:</string>
+    <string name="dialog_option_via_url">From URL</string>
+    <string name="dialog_option_arquivo_local">Local File</string>
+    <string name="dialog_button_carregar">Load</string>
+    <string name="dialog_button_cancelar">Cancel</string>
+    <string name="hint_nome_da_lista">List name (e.g., My Channels)</string>
+    <string name="hint_url_da_lista_m3u">M3U list URL (http://…)</string>
+    <string name="toast_insira_nome_url_validos">Please enter a valid name and URL/file.</string>
+    <string name="toast_erro_ler_arquivo">Error reading the selected file.</string>
+    <string name="toast_timeout_baixar_lista">Timeout while downloading the list. Check your connection/URL.</string>
+    <string name="toast_erro_carregar_lista">Error loading list: %s</string>
+    <string name="toast_erro_generico_carregar_lista">Error loading list. Please try again.</string>
+    <string name="toast_lista_carregada_sucesso">List loaded successfully.</string>
+    <string name="fab_content_description_load_m3u">Load new M3U list</string>
+
+    <string name="list_loaded_empty">List \'%1$s\' loaded is empty.</string>
+    <string name="list_loaded_invalid">List \'%1$s\' loaded, but no valid channels were found or the format is invalid.</string>
+    <string name="list_loaded_success">List \'%1$s\' loaded with %2$d channels.</string>
+
+    <string name="channel_logo_content_description">Channel logo</string>
+    <string name="channel_name_placeholder">Channel Name</string>
+    <string name="toast_url_canal_nao_encontrada">Channel URL not found.</string>
+    <string name="toast_erro_reproducao">Error during playback.</string>
+    <string name="toast_erro_iniciar_reproducao">Error starting playback.</string>
+
+    <string name="list_config_nome_da_lista">List name (optional)</string>
+    <string name="list_config_url_da_lista_m3u_ou_uri">M3U list URL or file URI</string>
+    <string name="list_config_salvar">Save</string>
+    <string name="list_config_carregar_do_arquivo">Select File</string>
+    <string name="list_config_ver_lista">View List</string>
+    <string name="list_config_dados_salvos">Configuration saved.</string>
+    <string name="list_config_arquivo_nao_m3u">File does not appear to be a valid M3U.</string>
+    <string name="list_config_arquivo_selecionado_sucesso">M3U file selected.</string>
+    <string name="list_config_nenhum_arquivo_selecionado">No file selected.</string>
+    <string name="list_config_informe_url_ou_arquivo">Please provide a URL or select a file.</string>
+    <string name="nome_da_lista">List name</string>
+    <string name="url_da_lista_m3u">M3U list URL</string>
+    <string name="salvar">Save</string>
+    <string name="carregar_do_arquivo">Load from File</string>
+    <string name="ver_lista">View List</string>
+    <string name="toast_erro_abrir_uri_local">Could not open local file: %s</string>
+
+    <string name="ad_unit_banner" translatable="false">ca-app-pub-2298650638489458/3122875797</string>
+
+    <string name="category_all">All</string>
+    <string name="category_channels">Channels</string>
+    <string name="category_movies">Movies</string>
+    <string name="category_series">Series</string>
+    <string name="category_others">Others</string>
+
+    <string name="player_play_pause_description">Play or Pause</string>
+    <string name="player_back_description">Back to channel list</string>
+    <string name="player_pip_description">Enable Picture-in-Picture mode</string>
+    <string name="player_rotate_description">Rotate screen</string>
+
+    <!-- Keyword Arrays for Categorization (English) -->
+    <string-array name="category_keywords_movies">
+        <item>movies</item>
+        <item>films</item>
+    </string-array>
+    <string-array name="category_keywords_series">
+        <item>series</item>
+        <item>tv shows</item>
+    </string-array>
+    <string-array name="category_keywords_channels">
+        <item>channels</item>
+        <item>tv</item>
+        <item>live</item>
+    </string-array>
+
+</resources>

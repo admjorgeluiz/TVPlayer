@@ -1,55 +1,58 @@
-# **TVPlayer \- Player de Listas M3U para Android**
+# **TVPlayer \- O seu Player de Listas M3U para Android\!**
 
-## **📖 Sobre o Projeto**
+## **📖 E aí, qual é a desse projeto?**
 
-**TVPlayer** é um aplicativo Android nativo, desenvolvido em Kotlin, projetado para oferecer uma experiência de usuário fluida e robusta para carregar e assistir a conteúdos de listas de reprodução no formato M3U. O app permite que os usuários adicionem listas a partir de uma URL ou de um arquivo local, organizando os canais por categorias e oferecendo um player de vídeo avançado e intuitivo.
+Sabe aquelas listas de canais M3U? Então, o **TVPlayer** é um app que eu criei em Kotlin pra gente conseguir carregar e assistir a essas listas de um jeito fácil e sem dor de cabeça\! Você pode simplesmente colar um link da web ou pegar um arquivo que já tenha no celular.
 
-Este projeto foi construído seguindo as mais modernas práticas de desenvolvimento Android, com foco em uma arquitetura limpa, performance e manutenibilidade.
+A ideia foi fazer um app com uma arquitetura moderna e limpinha, pensando na performance e em como facilitar a vida na hora de dar manutenção. Ele também já está preparado para as novidades do Android 15\!
 
-## **✨ Funcionalidades Principais**
+## **✨ O que é que ele faz de bom?**
 
-* **Carregamento Flexível de Listas:** Adicione sua lista de canais M3U a partir de uma URL da web ou selecionando um arquivo .m3u diretamente do seu dispositivo.
-* **Parser Inteligente:** Um parser M3U robusto que extrai nome, logo, grupo e URL de cada item, com suporte para diferentes formatos de atributos.
-* **Organização por Categorias:** Os canais são automaticamente agrupados em abas (Todos, Canais, Filmes, Séries, Outros) para uma navegação mais fácil e organizada.
-* **Busca em Tempo Real:** Filtre rapidamente a lista de canais digitando o nome do canal.
-* **Player de Vídeo Avançado (baseado em LibVLC):**
-    * Alta compatibilidade com diversos formatos de vídeo e codecs.
-    * **Controles por Gestos:** Ajuste o **brilho** (deslizando na esquerda da tela) e o **volume** (deslizando na direita) de forma intuitiva.
-    * Interface limpa com controles que desaparecem automaticamente.
-    * Suporte para modo tela cheia e rotação de tela.
-* **Persistência de Dados:** O aplicativo salva a última lista carregada para que você não precise inseri-la novamente a cada uso.
+* **Carregue listas de qualquer lugar:** Pode usar um link da internet ou um arquivo .m3u que já tenha guardado. Super flexível\!  
+* **Ele entende as listas:** O app tem um parser inteligente que consegue ler e separar direitinho o nome, o logo, o grupo e o link de cada canal.  
+* **Tudo organizado:** Chega de listas gigantes e confusas\! Ele agrupa os canais automaticamente em abas como "Canais", "Filmes", "Séries", etc. Fica bem mais fácil de achar o que você quer.  
+* **Busca na hora:** É só começar a digitar o nome do canal e a lista vai se filtrando em tempo real.  
+* **Guarda a sua última lista:** Pra não ter que ficar inserindo o link toda hora, o app lembra da última lista que você usou.  
+* **Um Player que é um show à parte (com motor VLC\!):**  
+  * Roda praticamente qualquer formato de vídeo que você imaginar.  
+  * **Controles por gestos, que nem os apps famosos:** Deslize o dedo na esquerda da tela para ajustar o brilho e na direita para o volume. É muito intuitivo\!  
+  * A interface é super limpa e os controles somem sozinhos para não atrapalhar.  
+  * **NOVO\! Picture-in-Picture (PiP):** Quer responder a uma mensagem? Sem problemas\! O vídeo continua tocando numa janelinha enquanto você usa outros apps.  
+  * **NOVO\! Botão pra girar a tela:** Quer forçar o vídeo a ficar na horizontal? É só tocar no botão\!  
+  * **NOVO\! Transmita para a TV:** Tem um Chromecast? É só tocar no botão e mandar o vídeo pra tela grande\!
 
-## **🛠️ Tecnologias e Arquitetura**
+## **🛠️ O que tem "debaixo do capô"?**
 
-Este projeto foi desenvolvido utilizando as seguintes tecnologias e padrões arquitetônicos:
+Pra quem curte a parte técnica, o projeto foi feito com:
 
-* **Linguagem:** 100% [Kotlin](https://kotlinlang.org/)
-* **Arquitetura:** **MVVM (Model-View-ViewModel)**, garantindo um código desacoplado, testável e resiliente a mudanças de configuração.
-* **Componentes de Arquitetura Android (Jetpack):**
-    * **ViewModel:** Para gerenciar os dados da UI de forma consciente do ciclo de vida.
-    * **LiveData:** Para notificar a UI sobre mudanças nos dados de forma reativa.
-    * **ViewBinding:** Para uma interação segura e eficiente com as views do XML.
-* **Assincronismo:** **Kotlin Coroutines** para executar operações de rede e I/O em segundo plano, mantendo a UI sempre responsiva.
-* **Player de Vídeo:** **LibVLC for Android**, uma biblioteca poderosa e de alta performance para reprodução de mídia.
-* **Carregamento de Imagens:** **Glide** para carregar e cachear os logos dos canais de forma eficiente.
-* **UI:** Componentes do **Material Design** para uma interface moderna e consistente.
-* **Gerenciamento de Dependências:** **Gradle Version Catalog** (libs.versions.toml) para uma gestão centralizada e limpa das bibliotecas.
+* **Linguagem:** 100% [Kotlin](https://kotlinlang.org/), claro\!  
+* **Arquitetura:** **MVVM (Model-View-ViewModel)**, pra deixar o código bem organizado e fácil de testar.  
+* **Componentes do Android (Jetpack):**  
+  * **ViewModel e LiveData:** Pra UI reagir às mudanças nos dados sem travar.  
+  * **ViewBinding:** Para interagir com os layouts XML de forma segura.  
+* **Tudo rodando liso com:** **Kotlin Coroutines**, para que as operações de rede não congelem o app.  
+* **Motor de Vídeo:** A força bruta da **LibVLC for Android**. É por isso que ele roda de tudo\!  
+* **Imagens:** A biblioteca **Glide** pra carregar os logos dos canais rapidinho.  
+* **UI:** Componentes do **Material Design** e já preparado para o visual **Edge-to-Edge**.  
+* **Dependências:** Tudo organizado com o **Gradle Version Catalog** (libs.versions.toml).
 
-## **🚀 Como Usar**
+## **🚀 Como faço pra rodar?**
+
+É moleza\!
 
 1. Clone o repositório:  
    git clone https://github.com/admjorgeluiz/TVPlayer.git
 
-2. Abra o projeto no Android Studio.
-3. Aguarde o Gradle sincronizar as dependências.
-4. Execute o aplicativo em um emulador ou dispositivo físico.
-5. Na tela principal, clique no botão flutuante (+) para adicionar uma nova lista via URL ou arquivo local.
+2. Abra o projeto no Android Studio.  
+3. Espere o Gradle fazer sua mágica e baixar tudo.  
+4. Dê o play num emulador ou no seu celular.  
+5. Na tela principal, é só clicar no botão de mais (+) e adicionar sua lista\!
 
-## **🔮 Próximos Passos (Roadmap)**
+## **🔮 E o que vem por aí? (Roadmap)**
 
-* \[ \] Implementar funcionalidade de **Picture-in-Picture (PiP)** no player de vídeo.
-* \[ \] Adicionar uma seção de "Favoritos".
-* \[ \] Implementar cache da lista de canais em um banco de dados local (Room) para carregamento offline.
-* \[ \] Melhorar a interface do player com mais controles (ex: seleção de faixa de áudio/legenda).
+* \[x\] Implementar o Picture-in-Picture (PiP). Já tá feito\!  
+* \[ \] Adicionar uma seção de "Favoritos" pra guardar aqueles canais que você mais gosta.  
+* \[ \] Fazer a lista funcionar offline, guardando-a num banco de dados (Room).  
+* \[ \] Dar um "up" no player com mais controles, como volume e seleção de áudio/legenda.
 
-Desenvolvido por Jorge Nascimento.
+Feito por Jorge Nascimento.

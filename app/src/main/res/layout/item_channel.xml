@@ -6,24 +6,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
-    android:background="?attr/selectableItemBackground"> <ImageView
-    android:id="@+id/imageLogo"
-    android:layout_width="48dp"
-    android:layout_height="48dp"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    android:contentDescription="@string/channel_logo_content_description"
-    android:scaleType="centerInside"
-    tools:srcCompat="@mipmap/ic_launcher" /> <TextView
-    android:id="@+id/textChannelName"
-    android:layout_width="0dp" android:layout_height="wrap_content"
-    tools:text="Nome Longo do Canal Que Pode Quebrar a Linha Facilmente"
-    android:textAppearance="?attr/textAppearanceListItem"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/imageLogo"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="@string/channel_logo_content_description"
+        android:scaleType="centerInside"
+        tools:srcCompat="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/textChannelName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="Nome Longo do Canal Que Pode Quebrar a Linha Facilmente"
+        android:textAppearance="?attr/textAppearanceListItem"
+
+
+    android:textColor="?attr/colorOnSurface"
+
     app:layout_constraintStart_toEndOf="@id/imageLogo"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     android:layout_marginStart="12dp"
     android:layout_marginEnd="8dp"
-    android:ellipsize="end" android:maxLines="2"    app:layout_constrainedWidth="true" /> </androidx.constraintlayout.widget.ConstraintLayout>
+    android:ellipsize="end"
+    android:maxLines="2"
+    app:layout_constrainedWidth="true" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

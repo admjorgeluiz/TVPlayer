@@ -25,7 +25,6 @@ class ChannelAdapter(
 
         fun bind(item: M3UItem) {
             binding.textChannelName.text = item.name
-            // Log.d(ADAPTER_TAG, "Binding item (ViewHolder): ${item.name}") // Descomente para depuração fina do bind
 
             if (!item.logo.isNullOrEmpty()) {
                 Glide.with(binding.imageLogo.context)
@@ -47,7 +46,6 @@ class ChannelAdapter(
 
     override fun onBindViewHolder(holder: ChannelViewHolder, position: Int) {
         val item = getItem(position)
-        // Log.d(ADAPTER_TAG, "onBindViewHolder: position=$position, name='${item.name}'") // Descomente para depuração fina
         holder.bind(item)
     }
 }
@@ -58,17 +56,12 @@ class ChannelDiffCallback : DiffUtil.ItemCallback<M3UItem>() {
     }
 
     override fun areItemsTheSame(oldItem: M3UItem, newItem: M3UItem): Boolean {
-        // Itens são os mesmos se as URLs (identificador único) forem as mesmas
         val result = oldItem.url == newItem.url
-        // Log.d(DIFF_TAG, "areItemsTheSame: old='${oldItem.name}', new='${newItem.name}', RESULT=$result")
         return result
     }
 
     override fun areContentsTheSame(oldItem: M3UItem, newItem: M3UItem): Boolean {
-        // Para data class, '==' compara todos os campos.
-        // Isto é geralmente o que se quer para determinar se o item precisa ser re-vinculado.
         val result = oldItem == newItem
-        // Log.d(DIFF_TAG, "areContentsTheSame: old='${oldItem.name}', new='${newItem.name}', RESULT=$result")
         return result
     }
 }

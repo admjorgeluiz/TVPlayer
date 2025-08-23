@@ -12,11 +12,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:background="?attr/colorSurfaceVariant"
+        android:background="?attr/colorSurface"
         android:padding="12dp"
         android:textAppearance="?attr/textAppearanceCaption"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="?attr/colorPrimary"        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Lista: Meus Canais VIP\nURL: http://lista.com/vip.m3u" />
@@ -35,12 +34,14 @@
         android:id="@+id/edtSearch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:autofillHints=""
         android:hint="@string/buscar_canal"
         android:padding="12dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:background="@android:color/transparent" android:inputType="text"
+        android:background="@android:color/transparent"
+        android:inputType="text"
         android:maxLines="1"
         app:layout_constraintTop_toBottomOf="@id/tabLayoutCategories" app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -76,14 +77,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@android:drawable/ic_menu_add"
-        app:tint="@color/fab_icon_tint" android:contentDescription="@string/fab_content_description_load_m3u"
+        app:tint="@color/fab_icon_tint"
+        android:contentDescription="@string/fab_content_description_load_m3u"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/adViewMain"
         android:layout_margin="16dp"/>
 
     <ProgressBar
         android:id="@+id/progressBarLoading"
-        style="?android:attr/progressBarStyle" android:visibility="gone"
+        style="?android:attr/progressBarStyle"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -97,7 +100,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:adSize="BANNER"
-        app:adUnitId="@string/ad_unit_banner" app:layout_constraintBottom_toBottomOf="parent"
+        app:adUnitId="@string/ad_unit_banner"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
